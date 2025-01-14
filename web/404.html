@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/css/common.css">
+    <title>Error 404</title>
+</head>
+
+<style>
+    body {
+        overflow: hidden;
+        height: 100vh;
+    }
+
+    .blur-container {
+        display: flex;
+        height: 100%;
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        padding: 20px;
+        background-color: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+    }
+
+    .blur-container img {
+        height: 200px;
+        transition: 0.4s ease;
+    }
+
+    .blur-container img:hover {
+        transform: rotate(5deg) scalex(0.9) perspective(100px);
+        filter: drop-shadow(0 0 10px rgba(45, 45, 45, 0.505));
+    }
+
+    h1 {
+        font-weight: normal;
+        text-shadow: 0 0 10px black;
+    }
+
+    .card {
+        position: absolute;
+        top: 0;
+        left: 0;
+        filter: drop-shadow(0px 0px 55px black);
+        z-index: -1;
+    }
+
+    a {
+        color: white;
+        text-decoration: none;
+        background-color: #ffffff1b;
+        border: 1px solid #fffcfc7b;
+        padding: 10px 20px;
+        border-radius: 5px;
+        margin-top: 20px;
+        transition: 0.4s ease;
+    }
+    
+    a:hover {
+        padding-inline: 40px;
+        transform: translateY(-10px);
+        background-color: #ffffff37;
+        box-shadow: 0 0 10px #fffcfc7b;
+    }
+</style>
+
+<body>
+    <div class="blur-container">
+        <img src="assets/img/cards/a.png">
+        <h1>Parece que te has perdido</h1>
+        <a href="index.html">Ir al Inicio</a>
+    </div>
+    <img class="card" src="assets/img/cards/a.png">
+    <img class="card" src="assets/img/cards/2.png">
+    <img class="card" src="assets/img/cards/3.png">
+    <img class="card" src="assets/img/cards/4.png">
+    <img class="card" src="assets/img/cards/5.png">
+    <img class="card" src="assets/img/cards/6.png">
+    <img class="card" src="assets/img/cards/7.png">
+    <img class="card" src="assets/img/cards/8.png">
+    <img class="card" src="assets/img/cards/9.png">
+    <img class="card" src="assets/img/cards/10.png">
+    
+</body>
+</html>
+
+<script>
+    // valor aleatorio entre el minimo y maximo
+    function getRandom(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    const cards = document.querySelectorAll('.card'); // seleccionar todas las cartas del fondo
+
+    // posicionar y rotar
+    cards.forEach(card => {
+        // valores desde 0 hasta el ancho total de la ventana dejando un márgen
+        const x = getRandom(0, window.innerWidth - 100); // horizontal
+        const y = getRandom(0, window.innerHeight - 100); // vertical
+        const rotation = getRandom(-50, 50); // rotación
+        const height = getRandom(100, 250); // altura
+
+        // le ponemos los estilos a cada carta
+        card.style.left = `${x}px`;
+        card.style.top = `${y}px`;
+        card.style.transform = `rotate(${rotation}deg)`;
+        card.style.position = 'absolute';
+        card.style.height = `${height}px`;
+    });
+</script>

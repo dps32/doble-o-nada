@@ -71,6 +71,7 @@ body {
     margin-top: 70px;
     margin-bottom: 140px;
     position: relative;
+    user-select: none;
 }
 
 .menu .logo img {
@@ -78,7 +79,7 @@ body {
     top: 10px;
     height: 110px;
     filter: drop-shadow(0 0 2px black);
-    transition: 0.3s ease;
+    transition: transform 0.3s ease;
 }
 
 .menu .logo img:nth-child(1) {
@@ -154,10 +155,59 @@ body {
 
 /* -----  CONTENT  ----- */
 
+.content-container {
+    display: flex;
+    flex: 1;
+    /* background-color: var(--secondary-color); */
+    transition: background-color 0.4s ease;
+}
+
 .content {
     flex: 1;
-    margin-top: 60px;
-    background-color: var(--secondary-color);
     border-top-left-radius: 10px;
+    margin-top: 60px;
+    padding: 0 20px;
+    backdrop-filter: blur(10px);
+    background-color: #1f1f1fc9;
+    overflow-x: hidden;
+    overflow-y: auto;
     transition: background-color 0.4s ease;
+}
+
+.content::-webkit-scrollbar {
+    width: 10px;
+}
+
+.content::-webkit-scrollbar-thumb {
+    background-color: var(--terciary-color);
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.bg-card {
+    position: absolute;
+    animation: fadeIn 1s ease none;
+    transition: 0.4s ease;
+    right: -185px;
+    top: 0px;
+    transform: rotate(-20deg);
+}
+
+.bg-card:hover {
+    right: -140px;
+    top: 0;
+    transform: rotate(-25deg);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        rotate: -10deg;
+        scale: 0 1;
+    }
+    to {
+        opacity: 1;
+        rotate: 0deg;
+        scale: 1;
+    }
 }

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/minigame.css">
     <title>Poker</title>
 </head>
 <header>
@@ -21,9 +22,28 @@
         <a href="equipo.html"><img src="assets/img/cards/3.png">Equipo</a>
         <a href="programacion.html"><img src="assets/img/cards/4.png">Programación</a>
     </div>
-    <div class="content">
-        asd
+    <div class="content-container">
+        <div class="content">
+            <img class="bg-card" src="assets/img/cards/a.png">
+            <h1>Bienvenido a Doble o nada 💸</h1>
+            <div class="game-wrapper">
+                <span class="title">Simulador</span>
+                <div class="game">
+                    <div class="cards">
+                        <img src="assets/img/cards/deck.png" class="deck">
+                        <div class="card-history">
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button class="hit">Pedir Carta</button>
+                        <button class="stand">Plantarse</button>
+                    </div>
+                </div>
+                <span class="counter">0</span>
+            </div>
+        </div>
     </div>
 </body>
 <script src="assets/js/navigation.js"></script>
+<script src="assets/js/minigame.js"></script>
 </html>
