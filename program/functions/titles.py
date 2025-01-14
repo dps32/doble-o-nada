@@ -1,4 +1,4 @@
-import SEVEN_AND_HALF_PROJECT.functions.formatting_functions as formatting
+import functions.formatting_functions as formatting
 
 main_ascii = """
 ██████╗░░█████╗░██████╗░██╗░░░░░███████╗  ░█████╗░  ███╗░░██╗░█████╗░██████╗░░█████╗░

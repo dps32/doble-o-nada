@@ -95,26 +95,52 @@ def newBot():
             else:
                 print("\nInvalid answer.\n")
 
-"""
-def setGamePriority(deck):
+def showPlayers(players):
+    data = ""
+    human_list = []
+    bot_list = []
+    for id in players:
+        if players[id]["human"] == True:
+            human_list.append(id)
+        else:
+            bot_list.append(id)
 
-def resetPoints():
+    while len(human_list) != 0 or len(bot_list) != 0:
+        if len(human_list) == 0:
+            data += " " * 66 + "||" + " " + bot_list[0].ljust(19) + players[bot_list[0]]["name"].ljust(27) + str(
+                players[bot_list[0]]["type"]).ljust(20) + "\n"
+            bot_list.remove(bot_list[0])
+        elif len(bot_list) == 0:
+            data += human_list[0].ljust(19) + players[human_list[0]]["name"].ljust(
+                27) + str(players[human_list[0]]["type"]).ljust(20) + "||" + " " * 67 + "\n"
+            human_list.remove(human_list[0])
+        else:
+            data += human_list[0].ljust(19) + players[human_list[0]]["name"].ljust(
+                27) + str(players[human_list[0]]["type"]).ljust(20) + "||" + " " + bot_list[0].ljust(19) + \
+                     players[bot_list[0]]["name"].ljust(27) + str(players[bot_list[0]]["type"]).ljust(20) + "\n"
+            bot_list.remove(bot_list[0])
+            human_list.remove(human_list[0])
+    data += "*" * 136
+    print(data)
 
-def fill_player_game(player_game,gameID,*fields):
-
-def fill_player_game_round(player_game_round,round,*fields):
-
-def checkMinimum2PlayerWithPoints():
-
-def orderAllPlayers():
-
-def setBets():
-
-def standardRound(id,deck):
-
-def humanRound(id,deck):
-
-def distributionPointAndNewBankCandidates():
-
-def printStats(idPlayer="",titulo="")
-"""
+def removePlayers(players):
+    opt = input("\n->Option ( -id to remove player, -1 to exit): ")
+    if opt[0] != "-":
+        print("\nInvalid option.\n")
+        return True
+    else:
+        opt = opt[1:]
+        if opt == "1":
+            return False
+        else:
+            exists = False
+            for key in players:
+                if opt == key:
+                    exists = True
+                    break
+            if exists:
+                del players[opt]
+                return True
+            else:
+                print("\nInvalid option.\n")
+                return True

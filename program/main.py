@@ -1,7 +1,12 @@
 import time #usaremos time.time() para saber el tiempo de juego (mide en segundos)
 import random
-import SEVEN_AND_HALF_PROJECT.functions.game_functions as game_functions
-import SEVEN_AND_HALF_PROJECT.functions.titles as titles
+import functions.option_one_functions as option_one_functions
+import functions.option_two_functions as option_two_functions
+import functions.option_three_functions as option_three_functions
+import functions.option_four_functions as option_four_functions
+import functions.option_five_functions as option_five_functions
+import functions.titles as titles
+import functions.table_headers as table_headers
 
 cards = {
     "O01": {"literal": "As de Oros", "value": 1, "priority": 4, "realValue": 1},
@@ -60,11 +65,11 @@ players = {
 
 #MODIFICAR
 game = []
-deck = []
+possible_decks = ["SPANISH (48 cards)","SPANISH (40 cards)","POKER"] #CAMBIAR PARA QUE LO SAQUE DE LA BASE DE DATOS
+deck_name = "SPANISH (48 cards)"
+deck = [] #LOS IDS DE LAS CARTAS LO TIENE QUE SACAR DE LA BBDD
 context_game = {"game":[],"round":0}
-
-#ASCII TITLES
-
+max_rounds = 5
 
 
 menu00 = "*"*136 + titles.title_main_centred + "*"*136 + "\n" + "1) Add/Remove/Show Players\n2) Settings\n3) Play Game\n4) Ranking\n5) Reports\n6) Exit\n"
@@ -77,13 +82,12 @@ menu05 = "*"*136 + titles.title_reports_centred + "*"*136 + "\n" + "1) Initial c
     + "6) Rounds won by the bank in each game.\n7) Number of users that have been the bank in each game.\n8) Average bet per game.\n9) Average bet of the first round of each game.\n"\
     + "10) Average bet of the last round of each game.\n11) Go back"
 
-def playGame():
-    "funcion a hacer"
-
 exit = False
 flg_00 = True
 flg_01 = False
+flg_013 = False
 flg_02 = False
+flg_021 = False
 flg_03 = False
 flg_04 = False
 flg_05 = False
@@ -128,7 +132,7 @@ while not exit:
                 print("\nInvalid option\n")
             elif opt == 1:
                 print("*"*136 + titles.title_new_human_centred + "*"*136 + "\n")
-                newHuman = game_functions.newHuman()
+                newHuman = option_one_functions.newHuman()
                 if not newHuman == False:
                     nif = newHuman[0]
                     name = newHuman[1]
@@ -138,7 +142,7 @@ while not exit:
 
             elif opt == 2:
                 print("*"*136 + titles.title_new_bot_centred + "*" * 136 + "\n")
-                newBot = game_functions.newBot()
+                newBot = option_one_functions.newBot()
                 if not newBot == False:
                     nif = newBot[0]
                     name = newBot[1]
@@ -148,38 +152,23 @@ while not exit:
                                     "type": profile, "bet": 4, "points": 0, "cards": [], "roundPoints": 0}
 
             elif opt == 3:
-                header = "*"*136 + titles.title_show_remove_centred + "*"*136 + "\n" + "Select players".center(136,"*") + "\n" + "Bot Players".center(67) + "||" + "Human Players".center(67) \
-                         + "\n" + "-" * 136 + "\n" + "ID".ljust(20) + "Name".ljust(27) + "Type".ljust(20) + "||" + " " + "ID".ljust(19) + "Name".ljust(27) + "Type".ljust(20) + "\n" + "*"*136 + "\n"
-                print(header)
-
-                datos = ""
-                human_list = []
-                bot_list = []
-                for id in players:
-                    if players[id]["human"] == True:
-                        human_list.append(id)
-                    else:
-                        bot_list.append(id)
-
-                while len(human_list) != 0 or len(bot_list) != 0:
-                    if len(human_list) == 0:
-                        datos += " "*66 + "||" + " " + bot_list[0].ljust(19) + players[bot_list[0]]["name"].ljust(27) + str(players[bot_list[0]]["type"]).ljust(20) + "\n"
-                        bot_list.remove(bot_list[0])
-                    elif len(bot_list) == 0:
-                        datos += human_list[0].ljust(19) + players[human_list[0]]["name"].ljust(
-                            27) + str(players[human_list[0]]["type"]).ljust(20) + "||" + " "*67 + "\n"
-                        human_list.remove(human_list[0])
-                    else:
-                        datos += human_list[0].ljust(19) + players[human_list[0]]["name"].ljust(
-                            27) + str(players[human_list[0]]["type"]).ljust(20) + "||" + " " + bot_list[0].ljust(19) + players[bot_list[0]]["name"].ljust(27) + str(players[bot_list[0]]["type"]).ljust(20) + "\n"
-                        bot_list.remove(bot_list[0])
-                        human_list.remove(human_list[0])
-                datos += "*"*136
-                print(datos)
+                flg_01 = False
+                flg_013 = True
 
             else:
                 flg_01 = False
                 flg_00 = True
+
+    while flg_013:
+        print(table_headers.show_remove_header)
+
+        option_one_functions.showPlayers(players)
+
+        continue_flg_013 = option_one_functions.removePlayers(players)
+
+        if not continue_flg_013:
+            flg_013 = False
+            flg_01 = True
 
     while flg_02:
         print(menu02)
@@ -191,17 +180,45 @@ while not exit:
             if opt < 1 or opt > 4:
                 print("\nInvalid option\n")
             elif opt == 1:
-                print("1")
+                flg_02 = False
+                flg_021 = True
+
             elif opt == 2:
-                print("2")
+                deck_number = option_two_functions.setDeck(possible_decks)
+                if deck_number == 0:
+                    print("The deck has not been changed. It is still {}.".format(deck_name))
+                else:
+                    deck_number = deck_number - 1
+                    deck_name = possible_decks[deck_number]
+                    print("Established deck: {}.".format(deck_name))
+
             elif opt == 3:
-                print("3")
+                max_rounds = option_two_functions.setMaxRounds()
+                print("Established maximum of rounds to {}.".format(max_rounds))
+
             else:
                 flg_02 = False
                 flg_00 = True
 
+    while flg_021:
+        print("*" * 136 + "\n" + titles.title_set_game_players_centred + "\n" + "*" * 136)
+        print(table_headers.show_players_header)
+        option_two_functions.showPlayersToChoose(game,players)
+        option_two_functions.showParticipants(game, players)
+        continue_picking = option_two_functions.pickParticipants(game, players)
+
+        if not continue_picking:
+            flg_021 = False
+            flg_02 = True
+
     while flg_03:
-        playGame()
+        #Cargar desde la BBDD las cartas del deck elegido en un diccionario
+        deck = list(cards.keys())
+
+        if len(game) >= 2:
+            option_three_functions.playGame(game,deck,cards)
+        else:
+            print("You cannot play. Please, choose at least 2 players for the game.")
 
         flg_03 = False
         flg_00 = True
