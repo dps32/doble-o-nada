@@ -66,7 +66,7 @@ players = {
 #MODIFICAR
 game = []
 possible_decks = ["SPANISH (48 cards)","SPANISH (40 cards)","POKER"] #CAMBIAR PARA QUE LO SAQUE DE LA BASE DE DATOS
-deck_name = "SPANISH (48 cards)"
+deck_name = "SPANISH (40 cards)"
 deck = [] #LOS IDS DE LAS CARTAS LO TIENE QUE SACAR DE LA BBDD
 context_game = {"game":[],"round":0}
 max_rounds = 5
@@ -216,7 +216,7 @@ while not exit:
         deck = list(cards.keys())
 
         if len(game) >= 2:
-            option_three_functions.playGame(game,deck,cards)
+            option_three_functions.playGame(players,game,deck,cards,max_rounds)
         else:
             print("You cannot play. Please, choose at least 2 players for the game.")
 
