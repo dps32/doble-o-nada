@@ -26,3 +26,4 @@ HAVING
 	total_games > 3                              -- Colegon cuenta el total de juegos
 ORDER BY 
     pr.player_id, times_repeated DESC;           -- Ordenar por jugador y veces repetidas
+
