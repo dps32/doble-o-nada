@@ -27,23 +27,38 @@
             <img class="bg-card" src="assets/img/cards/a.png">
             <h1>Bienvenido a Doble o nada 💸</h1>
             <div class="game-wrapper">
+                <div class="message">
+                    <span>Has perdido!</span>
+                    <button class="restart">Jugar de nuevo</button>
+                </div>
                 <span class="title">Simulador</span>
-                <div class="game">
+                <div class="game player">
                     <div class="cards">
-                        <img src="assets/img/cards/deck.png" class="deck">
+                        <img src="assets/img/cards/deck.png" class="deck blue">
                         <div class="card-history">
+                            <div class="placeholder"></div>
                         </div>
                     </div>
                     <div class="actions">
                         <button class="hit">Pedir Carta</button>
                         <button class="stand">Plantarse</button>
                     </div>
+                    <span class="counter">0</span>
                 </div>
-                <span class="counter">0</span>
+                <div class="game bot">
+                    <div class="cards">
+                        <img src="assets/img/cards/deck.png" class="deck">
+                        <div class="card-history">
+                            <div class="placeholder"></div>
+                        </div>
+                    </div>
+                    <span class="counter">0</span>
+                </div>
             </div>
         </div>
     </div>
 </body>
 <script src="assets/js/navigation.js"></script>
 <script src="assets/js/minigame.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tsparticles-confetti@2.12.0/tsparticles.confetti.bundle.min.js"></script>
 </html>

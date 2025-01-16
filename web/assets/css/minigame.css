@@ -1,9 +1,10 @@
 .game-wrapper {
     display: flex;
     flex-direction: column;
+    justify-content: space-evenly;
     gap: 10px;
     width: 500px;
-    height: 150px;
+    height: 350px;
     background-color: #00742F;
     border: 5px solid #643C1A;
     border-radius: 40px;
@@ -17,15 +18,54 @@
 }
 
 .game-wrapper .game {
+    position: relative;
     display: flex;
     flex-direction: row;
-    margin-left: 40px;
+    padding: 10px 20px;
+    margin-inline: 20px;
     gap: 5px;
+    border-radius: 7px;
+}
+
+.player.game.pulse {
+    animation: playerPulse 2s infinite ease-in-out;
+}
+
+.bot.game.pulse {
+    animation: botPulse 2s infinite ease-in-out;
+}
+
+@keyframes playerPulse {
+    0% {
+        background-color: #00000000;
+    }
+    50% {
+        background-color: #ffffff20;
+        box-shadow: 0 0 10px 8px #ffffff20;
+    }
+    100% {
+        background-color: #00000000;
+    }
+}
+
+
+@keyframes botPulse {
+    0% {
+        background-color: #00000000;
+    }
+    50% {
+        background-color: #ff00006b;
+        box-shadow: 0 0 10px 8px #ff00006b;
+    }
+    100% {
+        background-color: #00000000;
+    }
 }
 
 .game-wrapper .game .cards {
     display: flex;
     flex-direction: row;
+    user-select: none;
 }
 
 .game-wrapper .game .actions {
@@ -38,7 +78,7 @@
 .game-wrapper .game .actions button {
     padding: 8px 20px;
     border-radius: 5px;
-    background-color: rgba(0, 0, 0, 0.214);
+    background-color: #00000037;
     color: white;
     border: none;
     cursor: pointer;
@@ -46,33 +86,126 @@
     transition: 0.3s ease;
 }
 
+
 .game-wrapper .game .actions button:hover {
-    box-shadow: inset 0 0 5px #000000;
+    background-color: #0000005e;
+}
+
+.game-wrapper .game .actions button:disabled:hover {
+    background-color: #00000037;
+    cursor: default;
 }
 
 .game-wrapper .card-history {
+    position: relative;
     height: 85px;
     width: 85px;
-    transition: 0.3s ease;
+}
+
+.game-wrapper .card-history .placeholder {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    height: 85px;
+    width: 63px;
+    border-radius: 4px;
+    background-color: #0000005e;
+}
+
+.game-wrapper .card-history img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    height: 85px;
+    width: 85px;
+    transition: 1s ease;
+    animation: slideIn 2s ease;
+}
+
+/* .game-wrapper .card-history img:last-child{
+    filter: drop-shadow(5px 0px 2px #0000005e);
+} */
+
+@keyframes slideIn {
+    0% {
+        filter: drop-shadow(5px 0px 2px #0000005e);
+        transform: translateX(-100%);
+    }
+    50% {
+        transform: translateX(0);
+    }
+    100% {
+        filter: none;
+    }
 }
 
 .game-wrapper .deck {
     height: 85px;
-    width: 95px;
+    width: 107px;
     margin-inline: -12px;
+    z-index: 99;
     transition: 0.3s ease;
 }
 
-.game-wrapper .card:hover,
+.game-wrapper .deck.blue {
+    filter: hue-rotate(210deg);
+}
+
 .game-wrapper .deck:hover {
     transform: translateY(-3px);
-    filter: drop-shadow(0 8px 5px #00000075);
 }
 
 .game-wrapper .counter {
+    font-weight: bold;
     position: absolute;
     right: 30px;
     top: 50%;
     font-size: 30px;
     transform: translateY(-50%);
+    user-select: none;
+}
+
+.game-wrapper .message {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 101;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+    background-color: #00000057;
+    opacity: 0;
+    pointer-events: none;
+    transition: 1s ease;
+}
+
+.game-wrapper .message.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.game-wrapper .message span {
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+    text-shadow: 0 0 11px black;
+}
+
+.game-wrapper .message button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #ffffff29;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.game-wrapper .message button:hover {
+    background-color: #ffffff41;
 }
