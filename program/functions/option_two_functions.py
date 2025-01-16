@@ -118,8 +118,8 @@ def setMaxRounds():
             print("\nPlease, enter only numbers.\n")
         else:
             rounds = int(rounds)
-            if rounds < 1 or rounds > 25:
-                print("\nThe maximum number of rounds must be between 1 and 25, those included.\n")
+            if rounds < 1 or rounds > 30:
+                print("\nThe maximum number of rounds must be between 1 and 30, those included.\n")
             else:
                 return rounds
 
