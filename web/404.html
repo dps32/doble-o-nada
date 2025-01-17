@@ -10,7 +10,7 @@
 <style>
     body {
         overflow: hidden;
-        height: 100vh;
+        height: 100dvh;
     }
 
     .blur-container {
@@ -20,7 +20,6 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        border-radius: 10px;
         padding: 20px;
         background-color: rgba(0, 0, 0, 0.3);
         backdrop-filter: blur(10px);
@@ -42,7 +41,7 @@
     }
 
     .card {
-        position: absolute;
+        position: fixed;
         top: 0;
         left: 0;
         filter: drop-shadow(0px 0px 55px black);
@@ -108,7 +107,6 @@
         card.style.left = `${x}px`;
         card.style.top = `${y}px`;
         card.style.transform = `rotate(${rotation}deg)`;
-        card.style.position = 'absolute';
         card.style.height = `${height}px`;
     });
 </script>

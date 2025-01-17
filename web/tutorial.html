@@ -4,11 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="assets/css/common.css">
-    <title>Poker</title>
+    <link rel="stylesheet" href="assets/css/minigame.css">
+    <link rel="stylesheet" href="assets/css/tutorial.css">
+    <title>Tutorial</title>
 </head>
 <header>
 </header>
 <body>
+    <img class="menu-button" src="assets/img/menu.png">
     <div class="menu">
         <div class="logo">
             <img src="assets/img/cards/6.png">
@@ -23,9 +26,40 @@
     </div>
     <div class="content">
         <img class="bg-card" src="assets/img/cards/2.png">
+        <h1>Tutorial</h1>
 
-        asda
+        <div class="game-wrapper">
+            <div class="message">
+                <span>Has perdido!</span>
+                <button class="restart">Jugar de nuevo</button>
+            </div>
+            <span class="title">7,5</span>
+            <div class="game player">
+                <div class="cards">
+                    <img src="assets/img/cards/deck.png" class="deck blue">
+                    <div class="card-history">
+                        <div class="placeholder"></div>
+                    </div>
+                </div>
+                <div class="actions">
+                    <button class="hit">Pedir Carta</button>
+                    <button class="stand">Plantarse</button>
+                </div>
+                <span class="counter">0</span>
+            </div>
+            <div class="game bot">
+                <div class="cards">
+                    <img src="assets/img/cards/deck.png" class="deck">
+                    <div class="card-history">
+                        <div class="placeholder"></div>
+                    </div>
+                </div>
+                <span class="counter">0</span>
+            </div>
+        </div>
     </div>
 </body>
 <script src="assets/js/navigation.js"></script>
+<script src="assets/js/minigame.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tsparticles-confetti@2.12.0/tsparticles.confetti.bundle.min.js"></script>
 </html>

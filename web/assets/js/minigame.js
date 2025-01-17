@@ -183,34 +183,26 @@ function showMessage(text, color) {
 function endGame(won = false) {
     disableButtons();
     removePulse();
-    if (won){
-        var colors = ["#0016bb", "#ffffff"];
-        setTimeout(() => {
-            showMessage("¡Has ganado!", "#7c8cff");
-        }, 1000);
-    }
-    else{
-        var colors = ["#bb0000", "#ffffff"];
-        setTimeout(() => {
-            showMessage("¡Has perdido!", "#ff5959");
-        }, 1000);
-    }
-    
 
-    const ld = playTable.getBoundingClientRect();
+    // si gana mostramos el confetti
+    if (won) {
+        var colors = ["#0016bb", "#ffffff"];
+
+        const ld = playTable.getBoundingClientRect();
         var lx = ld.x; 
         var ly = ld.y + ld.height - 50;
 
         var rx = lx + ld.width;
         var ry = ly;
 
-        // Convertir coordenadas absolutas a proporciones relativas al tamaño de la ventana
+        // pasamos las coordenadas de pixeles a porcentajes
+        // l de left, r de right, x horizontal, y vertical
         lx = lx / window.innerWidth;
         ly = ly / window.innerHeight;
-
         rx = rx / window.innerWidth;
         ry = ry / window.innerHeight;
-        // esquina inferior izquierda del elemento
+
+        // repetimos el confetti 20 veces añadiendo 50ms por cada iteración
         for (let i = 0; i < 20; i++) {
             setTimeout(() => {
                 confetti({
@@ -229,10 +221,16 @@ function endGame(won = false) {
                 });
             }, i * 50);
         }
-}
 
-// // temporal al presionar el boton ctrl se llama a endGame(true)
-// document.addEventListener("keydown", (event) => {
-//     if (event.ctrlKey)
-//         endGame(true);
-// });
+        // mostramos que ha ganado
+        setTimeout(() => {
+            showMessage("¡Has ganado!", "#7c8cff");
+        }, 1000);
+    }
+    else{
+        // mostramos que ha perdido
+        setTimeout(() => {
+            showMessage("¡Has perdido!", "#ff5959");
+        }, 1000);
+    }
+}

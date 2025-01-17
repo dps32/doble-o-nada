@@ -7,13 +7,6 @@
     color: white;
 }
 
-:root:has(.light-theme) {
-    --primary-color: #f0f0f0;
-    --secondary-color: #e0e0e0;
-    --terciary-color: #d0d0d0;
-    color: black;
-}
-
 * {
     box-sizing: border-box;
 }
@@ -29,23 +22,6 @@ header {
     right: 0;
 }
 
-header .theme-change {
-    position: absolute;
-    right: 50px;
-    top: 10px;
-    height: 40px;
-    cursor: pointer;
-    transition: 0.4s ease;
-}
-
-:root:has(.light-theme) header .theme-change {
-    transform: scaleX(-1);
-}
-
-header .theme-change img {
-    height: 100%;
-}
-
 body {
     font-family: Montserrat, Arial, sans-serif;
     background-color: var(--primary-color);
@@ -56,6 +32,7 @@ body {
     height: 100vh;
     transition: background-color 0.4s ease;
 }
+
 
 /* -----  MENU  ----- */
 
@@ -167,7 +144,7 @@ body {
     flex: 1;
     border-top-left-radius: 10px;
     margin-top: 60px;
-    padding: 0 20px;
+    padding: 0 40px;
     backdrop-filter: blur(10px);
     background-color: #1f1f1fc9;
     overflow-x: hidden;
@@ -210,5 +187,86 @@ body {
         opacity: 1;
         rotate: 0deg;
         scale: 1;
+    }
+}
+
+.highlight {
+    color: #007BFF;
+    font-weight: bold;
+}
+
+.section {
+    margin-bottom: 20px;
+}
+
+li {
+    margin-bottom: 2px;
+}
+
+.menu-button {
+    height: 60px;
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    border-bottom-right-radius: 10px;
+    backdrop-filter: blur(5px);
+    padding: 10px;
+    transition: 0.4s ease;
+    z-index: 100;
+}
+
+.member {
+    margin-bottom: 30px;
+}
+
+.ss {
+    width: 80%;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px 0px #00000099;
+}
+
+@media (max-width: 800px) {
+    .ss {
+        width: 100%;
+    }
+}
+
+
+@media (max-width: 800px) {
+
+    body {
+        height: 100dvh;
+    }
+    a, button {
+        -webkit-tap-highlight-color: transparent;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+
+    .menu {
+        left: -250px;
+        position: absolute;
+        top: 0;
+        height: 100dvh;
+        background-color: var(--primary-color);
+        z-index: 999;
+        transition: 0.4s ease;
+    }
+    
+    .menu.open {
+        left: 0;
+    }
+
+    .menu-button {
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    .content {
+        margin-top: 0;
+        border-top-left-radius: 0;
+        padding-top: 55px;
     }
 }
