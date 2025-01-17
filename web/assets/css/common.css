@@ -33,6 +33,11 @@ body {
     transition: background-color 0.4s ease;
 }
 
+h3 {
+    font-weight: normal;
+    font-size: 25px;
+}
+
 
 /* -----  MENU  ----- */
 
@@ -145,6 +150,7 @@ body {
     border-top-left-radius: 10px;
     margin-top: 60px;
     padding: 0 40px;
+    padding-bottom: 20px;
     backdrop-filter: blur(10px);
     background-color: #1f1f1fc9;
     overflow-x: hidden;

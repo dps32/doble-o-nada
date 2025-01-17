@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="assets/css/common.css">
-    <link rel="stylesheet" href="assets/css/minigame.css">
     <link rel="stylesheet" href="assets/css/tutorial.css">
     <title>Tutorial</title>
 </head>
@@ -28,38 +27,64 @@
         <img class="bg-card" src="assets/img/cards/2.png">
         <h1>Tutorial</h1>
 
-        <div class="game-wrapper">
-            <div class="message">
-                <span>Has perdido!</span>
-                <button class="restart">Jugar de nuevo</button>
-            </div>
-            <span class="title">7,5</span>
-            <div class="game player">
-                <div class="cards">
-                    <img src="assets/img/cards/deck.png" class="deck blue">
-                    <div class="card-history">
-                        <div class="placeholder"></div>
-                    </div>
-                </div>
-                <div class="actions">
-                    <button class="hit">Pedir Carta</button>
-                    <button class="stand">Plantarse</button>
-                </div>
-                <span class="counter">0</span>
-            </div>
-            <div class="game bot">
-                <div class="cards">
-                    <img src="assets/img/cards/deck.png" class="deck">
-                    <div class="card-history">
-                        <div class="placeholder"></div>
-                    </div>
-                </div>
-                <span class="counter">0</span>
-            </div>
-        </div>
+        <p>Para utilizar el programa, primero ingresaremos al menú principal donde se nos presentan diferentes opciones.</p>
+        <img src="menu0.png" alt="Menú principal del programa.">
+        <!-- Imagen que muestra el menú principal -->
+
+        <p>Si es la primera vez que jugamos y no hay jugadores inscritos, seleccionamos la opción <strong>Add/Remove/Show Players</strong>.</p>
+        <img src="menu01_opcion1.png" alt="Menú 01: Opción 1 para añadir, eliminar o mostrar jugadores.">
+        <!-- Imagen que muestra la opción 1 del menú 01 -->
+
+        <p>Añadimos un jugador ingresando sus datos, como el nombre y el DNI.</p>
+        <img src="add_player.png" alt="Formulario para añadir un jugador al juego.">
+        <!-- Imagen que muestra el formulario para añadir jugadores -->
+
+        <p>A continuación, en el menú <strong>Settings</strong>, seleccionamos los jugadores que hemos añadido, eligiéndolos por su ID.</p>
+        <img src="menu02_opcion1.png" alt="Menú 02: Opción 1 para seleccionar jugadores.">
+        <!-- Imagen que muestra la opción 1 del menú 02 -->
+
+        <p>Una vez seleccionados los jugadores, elegimos la baraja con la que se jugará.</p>
+        <img src="menu02_opcion2.png" alt="Menú 02: Opción 2 para elegir la baraja.">
+        <!-- Imagen que muestra la opción 2 del menú 02 -->
+
+        <p>Podemos configurar el número de rondas que se jugarán en la partida.</p>
+        <img src="menu02_opcion3.png" alt="Menú 02: Opción 3 para seleccionar el número de rondas.">
+        <!-- Imagen que muestra la opción 3 del menú 02 -->
+
+        <p>Para empezar a jugar, volvemos al menú principal, seleccionamos la tercera opción y presionamos <strong>Enter</strong> para avanzar al siguiente menú.</p>
+        <img src="menu03_start_game.png" alt="Menú principal: Tercera opción para empezar el juego.">
+        <!-- Imagen que muestra la tercera opción del menú principal -->
+
+        <p>Una vez dentro del juego, podemos realizar varias acciones, como:</p>
+        <ul>
+            <li>Pedir estadísticas de cómo va la partida.</li>
+            <li>Declarar nuestra apuesta.</li>
+            <li>Pedir una carta.</li>
+            <li>Jugar en modo automático.</li>
+            <li>Plantarse.</li>
+        </ul>
+        <img src="menu03_opciones.png" alt="Menú 03: Opciones dentro del juego.">
+        <!-- Imagen que muestra las opciones disponibles durante la partida -->
+
+        <p>Desde el menú principal, también podemos consultar el ranking de jugadores seleccionando la cuarta opción.</p>
+        <img src="menu0_opcion4.png" alt="Menú principal: Opción 4 para consultar el ranking.">
+        <!-- Imagen que muestra la opción 4 del menú principal -->
+
+        <p>En el ranking podemos visualizar:</p>
+        <ul>
+            <li>El jugador que ha ganado más puntos.</li>
+            <li>El jugador con más partidas jugadas.</li>
+            <li>El jugador con más minutos jugados.</li>
+        </ul>
+        <img src="menu03_ranking_opciones.png" alt="Menú 03: Opciones de ranking.">
+        <!-- Imagen que muestra las opciones para visualizar el ranking -->
+
+        <p>Además, podemos ver una serie de reportes sobre los jugadores que han participado en las partidas.</p>
+        <img src="menu0_opcion5.png" alt="Menú principal: Opción 5 para consultar reportes de jugadores.">
+        <!-- Imagen que muestra la opción 5 del menú principal -->
+
+
     </div>
 </body>
 <script src="assets/js/navigation.js"></script>
-<script src="assets/js/minigame.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/tsparticles-confetti@2.12.0/tsparticles.confetti.bundle.min.js"></script>
 </html>

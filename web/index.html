@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/minigame.css">
     <title>Inicio</title>
 </head>
 <header>
@@ -96,8 +97,42 @@
                     <li>Los jugadores restantes continúan con el juego hasta que haya un ganador o se cumplan las rondas máximas.</li>
                 </ul>
             </div>
+
+
+            
+            <div class="game-wrapper">
+                <div class="message">
+                    <span>Has perdido!</span>
+                    <button class="restart">Jugar de nuevo</button>
+                </div>
+                <span class="title">7,5</span>
+                <div class="game player">
+                    <div class="cards">
+                        <img src="assets/img/cards/deck.png" class="deck blue">
+                        <div class="card-history">
+                            <div class="placeholder"></div>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button class="hit">Pedir Carta</button>
+                        <button class="stand">Plantarse</button>
+                    </div>
+                    <span class="counter">0</span>
+                </div>
+                <div class="game bot">
+                    <div class="cards">
+                        <img src="assets/img/cards/deck.png" class="deck">
+                        <div class="card-history">
+                            <div class="placeholder"></div>
+                        </div>
+                    </div>
+                    <span class="counter">0</span>
+                </div>
+            </div>
         </div>
     </div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/tsparticles-confetti@2.12.0/tsparticles.confetti.bundle.min.js"></script>
+<script src="assets/js/minigame.js"></script>
 <script src="assets/js/navigation.js"></script>
 </html>
