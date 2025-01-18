@@ -115,5 +115,17 @@ def updatePlayerGameTime(playerId, minutes):
     return query("UPDATE players SET time = time + %s WHERE player_id = %s", (minutes, playerId))
 
 
+# actualizar la fecha en la que la partida ha terminado
 def updateGameEndTime(gameId, endTime):
     return query("UPDATE games SET end_time = %s WHERE game_id = %s", (endTime, gameId))
+
+
+# actualizar la cantidad de puntos del ranking
+# hay que pasar la cantidad a sumar a su puntuación total
+def updatePlayerPoints(playerId, points):
+    return query("UPDATE players SET points = points + %s WHERE player_id = %s", (points, playerId))
+
+
+# borra a un jugador de la base de datos
+def deletePlayer(dni):
+    return query("DELETE FROM players WHERE dni = %s", (dni,))
