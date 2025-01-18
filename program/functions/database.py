@@ -79,13 +79,11 @@ def getPlayers():
     return result
 
 
-# insertPlayer
 # devuelve la id de la inserción
 def insertPlayer(dni, name, risk_level, is_ai):
     return query("INSERT INTO players (dni, name, risk_level, is_ai) VALUES (%s, %s, %s, %s)", (dni, name, risk_level, is_ai))
 
 
-# newGame
 # 1 - española
 # 2 - poker
 # devuelve la id de la inserción
@@ -93,13 +91,11 @@ def insertPlayer(dni, name, risk_level, is_ai):
 def newGame(deck = 1):
     return query("INSERT INTO games (deck_id) VALUES (%s)", (deck,))
 
-#insertPlayerIntoGame
 # insertar un jugador en una partida
 # devuelve la id de la inserción
 def insertPlayerIntoGame(playerId, gameId):
     return query("INSERT INTO game_players (player_id, game_id) VALUES (%s, %s)", (playerId, gameId))
 
-#newRound
 # crear una nueva ronda
 # gameId: id de la partida
 # roundNumber: número de ronda en esa partida
@@ -107,8 +103,18 @@ def newRound(gameId, roundNumber):
     return query("INSERT INTO rounds (game_id, round_number) VALUES (%s, %s)", (gameId, roundNumber))
 
 
-#insertPlayerRound
 # insertar un jugador en una ronda
 # se debe insertar al final de cada ronda por cada jugador que siga jugando
 def insertPlayerRound(round_id, is_bank, player_id, start_points, end_points, player_bet, first_card_in_hand):
     return query("INSERT INTO player_rounds (round_id, is_bank, player_id, start_points, end_points, player_bet, first_card_in_hand) VALUES (%s, %s, %s, %s, %s, %s, %s)", (round_id, is_bank, player_id, start_points, end_points, player_bet, first_card_in_hand))
+
+
+# actualizar el tiempo de juego de un jugador
+# playerId: id del jugador
+# minutes: minutos a añadir
+def updatePlayerGameTime(playerId, minutes):
+    return query("UPDATE players SET time = time + %s WHERE player_id = %s", (minutes, playerId))
+
+
+def updateGameEndTime(gameId, endTime):
+    return query("UPDATE games SET end_time = %s WHERE game_id = %s", (endTime, gameId))
