@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="assets/css/common.css">
     <link rel="stylesheet" href="assets/css/minigame.css">
-    <title>Poker</title>
+    <title>Inicio</title>
 </head>
 <header>
 </header>
 <body>
+    <img class="menu-button" src="assets/img/menu.png">
     <div class="menu">
         <div class="logo">
             <img src="assets/img/cards/6.png">
@@ -26,12 +27,85 @@
         <div class="content">
             <img class="bg-card" src="assets/img/cards/a.png">
             <h1>Bienvenido a Doble o nada 💸</h1>
+            <img src="assets/img/ss/main.png" class="ss">
+            
+            <div class="section">
+                <h3>Objetivo del Juego</h3>
+                <ul>
+                    <li>El objetivo es acercarte lo más posible al <span class="highlight">7,5</span> sin pasarte.</li>
+                    <li>Juegas contra el resto de jugadores de la partida, uno jugará como banca al iniciarla.</li>
+                </ul>
+            </div>
+        
+            <div class="section">
+                <h3>Tipos de Barajas</h3>
+                <ul>
+                    <li><span class="highlight">Baraja Española (40 cartas):</span> Sin ochos ni nueves.</li>
+                    <li><span class="highlight">Baraja Española Extendida (48 cartas):</span> Incluye ochos y nueves.</li>
+                    <li><span class="highlight">Baraja de Póker (52 cartas):</span> Incluye ochos, nueves y dieces además de las figuras.</li>
+                </ul>
+            </div>
+        
+            <div class="section">
+                <h3>Valor de las Cartas</h3>
+                <ul>
+                    <li><span class="highlight">Cartas numéricas (1 al 7):</span> Su valor es igual al número indicado en la carta.</li>
+                    <li><span class="highlight">(8 al 10) y figuras (Sota, Jota, Caballo, Reina, Rey):</span> Valen <span class="highlight">0,5 puntos</span> cada una.</li>
+                </ul>
+            </div>
+        
+            <div class="section">
+                <h3>Cómo Jugar</h3>
+                <ul>
+                    <li><span class="highlight">Configuración:</span> Selecciona la baraja y el número de rondas en la configuración.</li>
+                    <li><span class="highlight">Turnos:</span> Cada jugador recibe una carta inicial (que en la primera ronda decidirá quién es la banca).</li>
+                    <ul>
+                        <li>La banca es el jugador con la carta más alta. En caso de empate, se decide con los palos en este orden: <strong>Oros, Copas, Espadas, Bastos</strong>.</li>
+                        <li>Una vez determinado el orden, las cartas se devuelven al mazo, que se baraja de nuevo.</li>
+                    </ul>
+                    <li><span class="highlight">Opciones en cada turno:</span>
+                        <ul>
+                            <li><strong>Pedir carta:</strong> Recibes una carta y se te suma su puntuación.</li>
+                            <li><strong>Plantarse:</strong> Pasas el turno al siguiente jugador o se evalúa quién gana la ronda.</li>
+                        </ul>
+                    </li>
+                    <li><span class="highlight">La banca:</span> Juega al final de cada ronda y gana en caso de empate.</li>
+                </ul>
+            </div>
+        
+            <div class="section">
+                <h3>Cambios en la Banca</h3>
+                <ul>
+                    <li>Si la banca no saca <span class="highlight">7,5</span> y hay jugadores que lo consiguen, el jugador con mayor prioridad entre los candidatos se convierte en la nueva banca.</li>
+                    <li>Si la banca es eliminada y no hay candidatos, el jugador con mayor prioridad se convierte en la nueva banca.</li>
+                </ul>
+            </div>
+        
+            <div class="section">
+                <h3>Condiciones de Victoria</h3>
+                <ul>
+                    <li>Gana el jugador que esté más cerca de <span class="highlight">7,5</span> sin pasarse.</li>
+                    <li>Si hay empate, la banca tiene prioridad.</li>
+                    <li>Un jugador que consiga ganar con <span class="highlight">7,5</span> recibirá el doble de su apuesta.</li>
+                </ul>
+            </div>
+        
+            <div class="section">
+                <h3>Condiciones de Derrota</h3>
+                <ul>
+                    <li>Un jugador que pierde todos sus puntos es eliminado del juego.</li>
+                    <li>Los jugadores restantes continúan con el juego hasta que haya un ganador o se cumplan las rondas máximas.</li>
+                </ul>
+            </div>
+
+
+            
             <div class="game-wrapper">
                 <div class="message">
                     <span>Has perdido!</span>
                     <button class="restart">Jugar de nuevo</button>
                 </div>
-                <span class="title">Simulador</span>
+                <span class="title">7,5</span>
                 <div class="game player">
                     <div class="cards">
                         <img src="assets/img/cards/deck.png" class="deck blue">
@@ -58,7 +132,7 @@
         </div>
     </div>
 </body>
-<script src="assets/js/navigation.js"></script>
-<script src="assets/js/minigame.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tsparticles-confetti@2.12.0/tsparticles.confetti.bundle.min.js"></script>
+<script src="assets/js/minigame.js"></script>
+<script src="assets/js/navigation.js"></script>
 </html>

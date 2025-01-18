@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/programacion.css">
+    <title>Programación</title>
+</head>
+<header>
+</header>
+<body>
+    <img class="menu-button" src="assets/img/menu.png">
+    <div class="menu">
+        <div class="logo">
+            <img src="assets/img/cards/6.png">
+            <img src="assets/img/cards/a.png">
+            <img src="assets/img/cards/k.png">
+        </div>
+        <span class="name">Doble o nada</span>
+        <a href="index.html"><img src="assets/img/cards/a.png">Inicio</a>
+        <a href="tutorial.html"><img src="assets/img/cards/2.png">Tutorial</a>
+        <a href="equipo.html"><img src="assets/img/cards/3.png">Equipo</a>
+        <a href="programacion.html" class="selected"><img src="assets/img/cards/4.png">Programación</a>
+    </div>
+    <div class="content-container">
+        <div class="content">
+            <img class="bg-card" src="assets/img/cards/4.png">
+            <h1>Programación</h1>
+
+            <p>Durante el desarrollo nos hemos enfrentado a varios problemas, aunque ninguno fue lo suficientemente grave como para hacernos perder demasiado tiempo.</p>
+
+            <div class="section">
+                <h3>Problemas con la base de datos</h3>
+                <p>Uno de los principales problemas surgió al intentar conectar con la base de datos. Aunque la implementación inicial fue sencilla, nos encontramos con dificultades al usar la librería <span class="highlight">(mysql-connector)</span> en Linux debido a un problema relacionado con el SSL. Intentamos desactivar el SSL, pero esto hacía que diese otro error, finalmente solucionamos el problema instalando la versión correcta de la librería directamente desde <span class="highlight">PyCharm</span>.</p>
+                <p>Además de los problemas de conexión tuvimos dificultades con las respuestas de las consultas SQL. Inicialmente, no podíamos identificar a qué correspondía cada valor devuelto en los resultados de las consultas por lo que, buscando una solución, añadimmos un bucle que genera un diccionario para cada fila de resultados, emparejando cada columna con su valor correspondiente. Esto nos permitiría pasar de esto <span class="highlight">(1, "Alice", 0)</span> a esto <span class="highlight">{"player_id": 1, "name": "Alice", "is_ai": 0}</span>, lo que facilita mucho el manejo de los datos.</p>
+            </div>
+            
+            <div class="section">
+                <h3>Problemas con la interfaz</h3>
+                <p>En lo referente a la interfaz, hemos ido cambiando varias cosas durante el desarrollo. Al principio creabamos las variables de los títulos ASCII de forma manual, concatenando línea por línea y añadiendo manualmente los márgenes laterales, lo cual nos hacía perder mucho tiempo y no era práctico.</p>
+                <p>Descubrimos que podíamos simplificar el proceso utilizando triples comillas (<span class="highlight">"""</span>) para definir el texto directamente, sin necesidad de concatenar cada línea. Finalmente, añadimos una función que aplicaba automáticamente los márgenes con un for de cada línea, lo que nos ahorró bastante tiempo.</p>
+            </div>
+
+            <div class="section">
+                <h3></h3>
+            </div>
+    </div>
+</body>
+<script src="assets/js/navigation.js"></script>
+</html>

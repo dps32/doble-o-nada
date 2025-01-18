@@ -35,6 +35,7 @@ def query(query, params=None):
                 return [dict(zip(columns, row)) for row in results]
             else:
                 connection.commit()  # confirmar cambios
+                return cursor.lastrowid  # devolver el id de la última fila insertada
                 # print("Consulta ejecutada correctamente")
     except Error as e:
         print(f"Error al ejecutar la consulta: {e}")
@@ -61,8 +62,8 @@ def getCards(id):
         if card['value'] < 10: # añadimmos un 0 para las cartas de un dígito
             value = "0"+ str(card['value'])
         key = letter + value # clave de la carta
-
-        result[key] = {"literal": card['name'], "value": card['value'], "priority": card['priority'], "realValue": card['real_value']}
+        print(card)
+        result[key] = {"card_id": card['card_id'], "literal": card['name'], "value": card['value'], "priority": card['priority'], "realValue": card['real_value']}
     
     return result
 
@@ -76,3 +77,38 @@ def getPlayers():
         human = player['is_ai'] == 0 # cambiamos los valores de human a bools
         result[player['dni']] = {"name": player['name'], "human": human, "type": player['risk_level']}
     return result
+
+
+# insertPlayer
+# devuelve la id de la inserción
+def insertPlayer(dni, name, risk_level, is_ai):
+    return query("INSERT INTO players (dni, name, risk_level, is_ai) VALUES (%s, %s, %s, %s)", (dni, name, risk_level, is_ai))
+
+
+# newGame
+# 1 - española
+# 2 - poker
+# devuelve la id de la inserción
+# debe crearse al iniciar una partida
+def newGame(deck = 1):
+    return query("INSERT INTO games (deck_id) VALUES (%s)", (deck,))
+
+#insertPlayerIntoGame
+# insertar un jugador en una partida
+# devuelve la id de la inserción
+def insertPlayerIntoGame(playerId, gameId):
+    return query("INSERT INTO game_players (player_id, game_id) VALUES (%s, %s)", (playerId, gameId))
+
+#newRound
+# crear una nueva ronda
+# gameId: id de la partida
+# roundNumber: número de ronda en esa partida
+def newRound(gameId, roundNumber):
+    return query("INSERT INTO rounds (game_id, round_number) VALUES (%s, %s)", (gameId, roundNumber))
+
+
+#insertPlayerRound
+# insertar un jugador en una ronda
+# se debe insertar al final de cada ronda por cada jugador que siga jugando
+def insertPlayerRound(round_id, is_bank, player_id, start_points, end_points, player_bet, first_card_in_hand):
+    return query("INSERT INTO player_rounds (round_id, is_bank, player_id, start_points, end_points, player_bet, first_card_in_hand) VALUES (%s, %s, %s, %s, %s, %s, %s)", (round_id, is_bank, player_id, start_points, end_points, player_bet, first_card_in_hand))

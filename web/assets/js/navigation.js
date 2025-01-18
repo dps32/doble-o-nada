@@ -1,5 +1,6 @@
 const buttons = document.querySelectorAll(".menu a");
 const menu = document.querySelector(".menu");
+const menuBtn = document.querySelector(".menu-button");
 
 buttons.forEach(function (button) {
     button.addEventListener("click", function (event) {
@@ -16,3 +17,12 @@ buttons.forEach(function (button) {
             menu.style.pointerEvents = "auto"; // habilitamos los eventos del boton por si el usuario vuelve atras
         }, 400);
 })});
+
+menuBtn.addEventListener("click", function () {
+    menu.classList.toggle("open");
+    document.addEventListener("click", function (event) {
+        if (!menu.contains(event.target) && !menuBtn.contains(event.target)) {
+            menu.classList.remove("open");
+        }
+    });
+});
