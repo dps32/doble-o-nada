@@ -1,4 +1,4 @@
-import time #usaremos time.time() para saber el tiempo de juego (mide en segundos)
+from datetime import datetime
 import random
 import functions.database as database
 import functions.option_one_functions as option_one_functions
