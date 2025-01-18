@@ -6,7 +6,7 @@ SELECT
     p.name AS player_name,  -- Nombre del jugador
     SUM(pr.end_points - pr.start_points) AS total_gains, -- Ganancias totales obtenidas
     COUNT(DISTINCT r.game_id) AS total_games, -- Total de partidas jugadas
-    SUM(TIMESTAMPDIFF(MINUTE, g.start_time, g.end_time)) AS total_minutes_played -- Total de minutos jugados
+    p.time AS total_minutes_played -- Minutos totales jugados acumulados
 FROM 
     players p
 JOIN 
