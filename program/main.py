@@ -9,6 +9,8 @@ import functions.option_five_functions as option_five_functions
 import functions.titles as titles
 import functions.table_headers as table_headers
 
+players = database.getPlayers()
+
 
 #MODIFICAR
 game = []
@@ -158,8 +160,8 @@ while not exit:
             flg_02 = True
 
     while flg_03:
-        #Cargar desde la BBDD las cartas del deck elegido en un diccionario
-        deck = database.getcards(1)
+        cards = database.getCards(possible_decks.index(deck_name)+1)
+        deck = list(cards.keys())
 
         if len(game) >= 2:
             option_three_functions.playGame(players,game,deck,cards,max_rounds)

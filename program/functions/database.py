@@ -5,7 +5,7 @@ def getConnection():
     try:
         # datos de conexión
         connection = mysql.connector.connect(
-            host='dobleonada.mysql.database.azure.com',
+            host='68.221.249.24',
             user='adminsql',
             password='Dani_cris_monica',
             database='sieteymedio'
