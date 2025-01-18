@@ -62,7 +62,6 @@ def getCards(id):
         if card['value'] < 10: # añadimmos un 0 para las cartas de un dígito
             value = "0"+ str(card['value'])
         key = letter + value # clave de la carta
-        print(card)
         result[key] = {"card_id": card['card_id'], "literal": card['name'], "value": card['value'], "priority": card['priority'], "realValue": card['real_value']}
     
     return result

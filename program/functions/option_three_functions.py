@@ -1,29 +1,12 @@
 import random
 import functions.titles as titles
 #REVISAR QUÉ VARIABLES PUEDO PONER COMO GLOBALES (ej. players, cards...)
-"""
-def setGamePriority(deck):
 
-def fill_player_game(player_game,gameID,*fields):
-
-def fill_player_game_round(player_game_round,round,*fields):
-
-def checkMinimum2PlayerWithPoints():
-
-def orderAllPlayers():
-
-def standardRound(id,deck):
-
-def humanRound(id,deck):
-
-def distributionPointAndNewBankCandidates():
-
-"""
 def playGame(players,game,deck,cards,max_rounds):
     round = 0
     exit = False
 
-    resetPoints(players,game) #Le damos a todos los jugadores 20 puntos para empezar
+    resetPointsInitialCard(players,game) #Le damos a todos los jugadores 20 puntos para empezar, y sitio para guardar la carta inicial
 
     while len(game) > 1 and round <= max_rounds and not exit:
         if players[game[0]]["initialCard"] == "":
@@ -33,9 +16,10 @@ def playGame(players,game,deck,cards,max_rounds):
 
     winner(players,game,round,max_rounds)
 
-def resetPoints(players,game):
+def resetPointsInitialCard(players,game):
     for player in game:
         players[player]["points"] = 20
+        players[player]["initialCard"] = ""
         print("\nEvery player has now 20 points to start playing!\n")
 
 
@@ -152,6 +136,7 @@ def bankRound(players,player,game,deck,cards,used_cards,losingPot):
 def humanRound(players,player,game,deck,cards,used_cards,losingPot):
     while players[player]["roundPoints"] < 7.5:
         menuHumanRound = "\n1) View Stats\n2) View Game Stats\n3) Hit\n4) Stand\n5) Automatic Play\n"
+        print(menuHumanRound)
         opt = input("Option: ")
         if not opt.isdigit():
             print("\nInvalid option\n")
