@@ -1,0 +1,8 @@
+.section {
+    margin-top: 40px;
+}
+
+p {
+    width: 90%;
+    text-wrap: pretty;
+}
