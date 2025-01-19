@@ -129,3 +129,13 @@ def updatePlayerPoints(playerId, points):
 # borra a un jugador de la base de datos
 def deletePlayer(dni):
     return query("DELETE FROM players WHERE dni = %s", (dni,))
+
+def getReport(report_name):
+    report = query("SELECT * FROM {}".format(report_name))
+    result = {}
+    return result
+
+def getRanking():
+    ranking = query("SELECT * FROM ")
+    result = {}
+    return result

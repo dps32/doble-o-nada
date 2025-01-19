@@ -1,15 +1,24 @@
-import datetime
+from datetime import datetime
 import random
 import functions.titles as titles
 import functions.database as database
 #REVISAR QUÉ VARIABLES PUEDO PONER COMO GLOBALES (ej. players, cards...)
 
+
 def playGame(players,game,deck,deckID,cards,max_rounds):
-    if deckID == 0 or deckID == 1:
+    game_variables = {}
+
+    """if deckID == 0 or deckID == 1:
         gameID = database.newGame(deck = 1)
     else:
         gameID = database.newGame(deck = 2)
-    game_variables = {"gameID":gameID}
+    game_variables["gameID"] = gameID
+    game_variables["start_time"] = datetime.now().replace(microsecond=0)
+
+    for player in game:
+        #FUNCION QUE ME DE EL playerID A PARTIR DEL DNI
+        game_variables["playersIDs"][player] = playerID
+        database.insertPlayerIntoGame(playerID, game_variables["gameID"])"""
 
     print("*"*136 + "\n" + titles.title_seven_and_half_centred + "\n" + "*"*136)
 
@@ -20,11 +29,12 @@ def playGame(players,game,deck,deckID,cards,max_rounds):
 
     while len(game) > 1 and round <= max_rounds and not exit:
         if players[game[0]]["initialCard"] == "":
-            setGamePriority(players,game,deck,cards)
-        round = playRound(players,game,deck,cards,round)
+            setGamePriority(players,game,deck,cards,round,game_variables)
+        round = playRound(players,game,deck,cards,round,game_variables)
         exit = exitGame()
 
     winner(players,game,round,max_rounds)
+    """database.updateGameEndTime(game_variables["gameID"], datetime.now().replace(microsecond=0))"""
     input("Enter to continue")
 
 def resetPointsInitialCard(players,game):
@@ -34,7 +44,10 @@ def resetPointsInitialCard(players,game):
     print("\nEvery player has now 20 points to start playing!\n")
 
 
-def setGamePriority(players,game,deck,cards):
+def setGamePriority(players,game,deck,cards,round,game_variables):
+    """roundID = database.newRound(game_variables["gameID"], round)
+        round_variables["roundID"] = roundID"""
+
     used_cards = []
 
     #Damos la carta inicial a todos los jugadores
@@ -79,12 +92,17 @@ def setGamePriority(players,game,deck,cards):
     print(summary)
     print("{}, the player with the most priority, is now the Bank!\n".format(players[game[-1]]["name"]))
 
+    """for player in round_variables["roundPlayers"]:
+            database.insertPlayerRound(round_variables["roundID"],players[player]["bank"],game_variables["playersIDs"][player],20,20,0,players[player]["initialCard"])"""
 
     input("Enter to continue")
 
 
-def playRound(players,game,deck,cards,round):
-    """round_variables = {}"""
+def playRound(players,game,deck,cards,round,game_variables):
+    round_variables = {}
+
+    """roundID = database.newRound(game_variables["gameID"], round)
+    round_variables["roundID"] = roundID"""
 
     round +=1
     print("*" * 136 + "\n" + titles.title_seven_and_half_centred + "\n")
@@ -104,6 +122,9 @@ def playRound(players,game,deck,cards,round):
         hitCard(players, player, game, deck, cards, used_cards,losingPot) #Se le da a todos los jugadores la primera carta de la ronda
         summary += "{}".format(players[player]["name"]).center(20) + "{}".format(players[player]["cards"][0]).center(20) + "{}".format(players[player]["roundPoints"]).center(20) + "\n"
     print(summary)
+
+    for player in game:
+        round_variables["roundPlayers"][player] = {"playerID":game_variables["playersIDs"][player],"is_bank":players[player]["bank"],"start_points":players[player]["points"],"end_points":0,"player_bet":players[player]["bet"],"first_card":players[player]["cards"][0]} # Ponemos end_points=0 por si algun jugador es eliminado en la ronda y si no lo es, al recorrer la lista de participantes al final de la ronda se corregirán los puntos finales de la ronda
 
     for player in game:
         if players[player]["bank"]:
@@ -127,12 +148,14 @@ def playRound(players,game,deck,cards,round):
                 input("Enter to continue")
 
     showSummaryStats(players, game)
-    givePoints_bankCandidates(players,game,losingPot)
+    givePoints_bankCandidates(players,game,losingPot,round_variables,game_variables)
     input("Enter to continue")
     showSummaryStats(players,game)
-    eliminatingPlayersWith0Points(players,game)
+    eliminatingPlayersWith0Points(players,game,game_variables)
     showSummaryStats(players,game)
 
+    """for player in round_variables["roundPlayers"]:
+        database.insertPlayerRound(round_variables["roundID"],round_variables["roundPlayers"][player]["is_bank"],game_variables["playersIDs"][player],round_variables["roundPlayers"][player]["start_points"],round_variables["roundPlayers"][player]["end_points"],round_variables["roundPlayers"][player]["player_bet"],round_variables["roundPlayers"][player]["first_card"])"""
     deck = deck + used_cards # Resetting the deck
     return round
 
@@ -390,7 +413,7 @@ def mustBankHit(players,player,deck,cards,game,losingPot):
     #La banca no tiene 7,5 ni más, hay jugadores que ganan a la banca y tiene puntos como para pagar las apuestas sin perder
     return shouldTakeRisk(players,player,deck,cards)
 
-def givePoints_bankCandidates(players,game,losingPot):
+def givePoints_bankCandidates(players,game,losingPot,round_variables,game_variables):
     bankCandidates = []
 
     for player in game:
@@ -477,7 +500,11 @@ def givePoints_bankCandidates(players,game,losingPot):
     if len(bankCandidates) != 0: # Si hay candidatos a la banca
         if players[game[-1]]["points"] == 0: # Y la banca actual debe ser eliminada
             print("{}, who was the Bank, has been eliminated!".format(players[game[-1]]["name"]))
+
+            """database.updatePlayerGameTime(game_variables["playersIDs"][game[-1]], (
+                        datetime.now().replace(microsecond=0) - game_variables["start_time"]).total_seconds() / 60)"""
             game.remove(game[-1]) # Eliminamos a la banca de la lista de jugadores
+
 
             players[bankCandidates[-1]]["bank"] = True  #Ponemos al jugador más prioritario de la lista de candidatos como banca
             print("{} is now the Bank!".format(players[bankCandidates[-1]]["name"]))
@@ -507,10 +534,18 @@ def givePoints_bankCandidates(players,game,losingPot):
     else: # Si no hay candidatos a la banca
         if players[game[-1]]["points"] == 0: # Y la banca actual debe ser eliminada
             print("{}, who was the Bank, has been eliminated!".format(players[game[-1]]["name"]))
+
+            """database.updatePlayerGameTime(game_variables["playersIDs"][game[-1]], (
+                    datetime.now().replace(microsecond=0) - game_variables["start_time"]).total_seconds() / 60)"""
             game.remove(game[-1]) # Quitamos a la banca de la lista
+
 
             players[game[-1]]["bank"] = True # Y el nuevo último jugador de la lista (el más prioritario) pasará a ser banca
             print("{} is now the Bank!".format(players[game[-1]]["name"]))
+
+
+    """for player in game: # Cambiamos los end_points = 0 por los end_points de los jugadores que siguen jugando (y que por lo tanto no tienen 0 puntos)
+        round_variables["roundPlayers"][player]["end_points"] = players[player]["points"]"""
 
 def tooManyPoints(players, player, game, losingPot):
     if players[player]["bank"] and players[player]["roundPoints"]>7.5:
@@ -527,11 +562,15 @@ def tooManyPoints(players, player, game, losingPot):
             eliminatingPlayersWith0Points(players,game)
             return losingPot
 
-def eliminatingPlayersWith0Points(players,game):
+def eliminatingPlayersWith0Points(players,game,game_variables):
     for player in game:
         if players[player]["points"] == 0:
             print("{} has been eliminated from the game!".format(players[player]["name"]))
+
+            """database.updatePlayerGameTime(game_variables["playersIDs"][player], (
+                                    datetime.now().replace(microsecond=0) - game_variables["start_time"]).total_seconds() / 60)"""
             game.remove(player)
+
             input("Enter to continue")
 
 def resettingPlayerRoundValues(players,game):
