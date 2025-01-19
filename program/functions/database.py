@@ -35,6 +35,7 @@ def query(query, params=None):
                 return [dict(zip(columns, row)) for row in results]
             else:
                 connection.commit()  # confirmar cambios
+                return cursor.lastrowid  # devolver el id de la última fila insertada
                 # print("Consulta ejecutada correctamente")
     except Error as e:
         print(f"Error al ejecutar la consulta: {e}")
@@ -58,11 +59,14 @@ def getCards(id):
         lastSpace = card['name'].rfind(' ') # pillar la posición del último espacio
         letter = card['name'][lastSpace + 1] # pillar la primera letra de la última palabra
 
-        if card['value'] < 10: # añadimmos un 0 para las cartas de un dígito
+        if int(card['value']) < 10: # añadimmos un 0 para las cartas de un dígito
             value = "0"+ str(card['value'])
+        else:
+            value = str(card['value'])
         key = letter + value # clave de la carta
 
-        result[key] = {"literal": card['name'], "value": card['value'], "priority": card['priority'], "realValue": card['real_value']}
+        # print(card)
+        result[key] = {"card_id": card['card_id'], "literal": card['name'], "value": card['value'], "priority": card['priority'], "realValue": card['real_value']}
     
     return result
 
@@ -74,5 +78,69 @@ def getPlayers():
 
     for player in players:
         human = player['is_ai'] == 0 # cambiamos los valores de human a bools
-        result[player['dni']] = {"name": player['name'], "human": human, "type": player['risk_level']}
+        result[player['dni']] = {"player_id": player['player_id'], "name": player['name'], "human": human, "type": player['risk_level']}
+    return result
+
+
+# devuelve la id de la inserción
+def insertPlayer(dni, name, risk_level, is_ai):
+    return query("INSERT INTO players (dni, name, risk_level, is_ai) VALUES (%s, %s, %s, %s)", (dni, name, risk_level, is_ai))
+
+
+# 1 - española
+# 2 - poker
+# devuelve la id de la inserción
+# debe crearse al iniciar una partida
+def newGame(deck = 1):
+    return query("INSERT INTO games (deck_id) VALUES (%s)", (deck,))
+
+# insertar un jugador en una partida
+# devuelve la id de la inserción
+def insertPlayerIntoGame(playerId, gameId):
+    return query("INSERT INTO game_players (player_id, game_id) VALUES (%s, %s)", (playerId, gameId))
+
+# crear una nueva ronda
+# gameId: id de la partida
+# roundNumber: número de ronda en esa partida
+def newRound(gameId, roundNumber):
+    return query("INSERT INTO rounds (game_id, round_number) VALUES (%s, %s)", (gameId, roundNumber))
+
+
+# insertar un jugador en una ronda
+# se debe insertar al final de cada ronda por cada jugador que siga jugando
+def insertPlayerRound(round_id, is_bank, player_id, start_points, end_points, player_bet, first_card_in_hand):
+    return query("INSERT INTO player_rounds (round_id, is_bank, player_id, start_points, end_points, player_bet, first_card_in_hand) VALUES (%s, %s, %s, %s, %s, %s, %s)", (round_id, is_bank, player_id, start_points, end_points, player_bet, first_card_in_hand))
+
+
+# actualizar el tiempo de juego de un jugador
+# playerId: id del jugador
+# minutes: minutos a añadir
+def updatePlayerGameTime(playerId, minutes):
+    return query("UPDATE players SET time = time + %s WHERE player_id = %s", (minutes, playerId))
+
+
+# actualizar la fecha en la que la partida ha terminado
+def updateGameEndTime(gameId, endTime):
+    return query("UPDATE games SET end_time = %s WHERE game_id = %s", (endTime, gameId))
+
+
+# actualizar la cantidad de puntos del ranking
+# hay que pasar la cantidad a sumar a su puntuación total
+def updatePlayerPoints(playerId, points):
+    return query("UPDATE players SET points = points + %s WHERE player_id = %s", (points, playerId))
+
+
+# borra a un jugador de la base de datos
+def deletePlayer(dni):
+    return query("DELETE FROM players WHERE dni = %s", (dni,))
+
+
+def getReport(report_name):
+    report = query("SELECT * FROM {}".format(report_name))
+    result = {}
+    return result
+
+def getRanking():
+    ranking = query("SELECT * FROM ")
+    result = {}
     return result
