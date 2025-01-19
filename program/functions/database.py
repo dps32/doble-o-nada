@@ -135,7 +135,7 @@ def deletePlayer(dni):
     return query("DELETE FROM players WHERE dni = %s", (dni,))
 
 
-def getReport(report_name):
+"""def getReport(report_name):
     report = query("SELECT * FROM {}".format(report_name))
     result = {}
     return result
@@ -143,4 +143,4 @@ def getReport(report_name):
 def getRanking():
     ranking = query("SELECT * FROM ")
     result = {}
-    return result
+    return result"""
