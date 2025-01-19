@@ -27,7 +27,7 @@ def showPlayersToChoose(game,players):
     bot_list = []
     for id in players:
         if id not in game:
-            if players[id]["human"] == True:
+            if players[id]["human"]:
                 human_list.append(id)
             else:
                 bot_list.append(id)
@@ -54,7 +54,8 @@ def pickParticipants(game,players):
     opt = input("\n->Option (id to add to game, -id to remove from game, -1 to exit): ")
 
     if len(game) > 6:
-        print("\nMaximum number of participants reached!\n")
+        print("\nMaximum number of participants reached!")
+        input("Enter to continue\n")
         return False
     else:
         if opt[0] == "-":
@@ -70,10 +71,13 @@ def pickParticipants(game,players):
                 if exists and opt in game:
                     game.remove(opt)
                     print("{} is no longer a participant.".format(opt))
+                    input("Enter to continue\n")
                 elif exists and opt not in game:
                     print("{} is not in the list of participants.".format(opt))
+                    input("Enter to continue\n")
                 else:
                     print("There is no player with ID: ",opt)
+                    input("Enter to continue\n")
                 return True
         else:
             exists = False
@@ -83,11 +87,14 @@ def pickParticipants(game,players):
                     break
             if exists and opt in game:
                 print("{} is already a participant.".format(opt))
+                input("Enter to continue\n")
             elif exists and opt not in game:
                 game.append(opt)
                 print("{} is now a participant.".format(opt))
+                input("Enter to continue\n")
             else:
                 print("There is no player with ID: ", opt)
+                input("Enter to continue\n")
             return True
 
 def setDeck(possible_decks):
@@ -100,13 +107,15 @@ def setDeck(possible_decks):
 
         deck = input("Choose a deck (0 to go back): ")
         if not deck.isdigit():
-            print("\nPlease, enter only numbers.\n")
+            print("\nPlease, enter only numbers.")
+            input("Enter to continue\n")
         else:
             deck = int(deck)
             if deck == 0:
                 return deck
             elif deck > len(possible_decks):
-                print("\nInvalid option.\n")
+                print("\nInvalid option.")
+                input("Enter to continue\n")
             else:
                 return deck
 
@@ -115,11 +124,13 @@ def setMaxRounds():
         print("*"*136 + "\n" + titles.title_set_max_rounds_centred + "\n" + "*"*136)
         rounds = input("Max Rounds: ")
         if not rounds.isdigit():
-            print("\nPlease, enter only numbers.\n")
+            print("\nPlease, enter only numbers.")
+            input("Enter to continue\n")
         else:
             rounds = int(rounds)
             if rounds < 1 or rounds > 30:
-                print("\nThe maximum number of rounds must be between 1 and 30, those included.\n")
+                print("\nThe maximum number of rounds must be between 1 and 30, those included.")
+                input("Enter to continue\n")
             else:
                 return rounds
 
