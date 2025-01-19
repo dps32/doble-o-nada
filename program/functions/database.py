@@ -59,9 +59,13 @@ def getCards(id):
         lastSpace = card['name'].rfind(' ') # pillar la posición del último espacio
         letter = card['name'][lastSpace + 1] # pillar la primera letra de la última palabra
 
-        if card['value'] < 10: # añadimmos un 0 para las cartas de un dígito
+        if int(card['value']) < 10: # añadimmos un 0 para las cartas de un dígito
             value = "0"+ str(card['value'])
+        else:
+            value = str(card['value'])
         key = letter + value # clave de la carta
+
+        # print(card)
         result[key] = {"card_id": card['card_id'], "literal": card['name'], "value": card['value'], "priority": card['priority'], "realValue": card['real_value']}
     
     return result
@@ -74,7 +78,7 @@ def getPlayers():
 
     for player in players:
         human = player['is_ai'] == 0 # cambiamos los valores de human a bools
-        result[player['dni']] = {"name": player['name'], "human": human, "type": player['risk_level']}
+        result[player['dni']] = {"player_id": player['player_id'], "name": player['name'], "human": human, "type": player['risk_level']}
     return result
 
 
@@ -129,6 +133,7 @@ def updatePlayerPoints(playerId, points):
 # borra a un jugador de la base de datos
 def deletePlayer(dni):
     return query("DELETE FROM players WHERE dni = %s", (dni,))
+
 
 def getReport(report_name):
     report = query("SELECT * FROM {}".format(report_name))
