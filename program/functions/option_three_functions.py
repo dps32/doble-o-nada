@@ -1,10 +1,15 @@
 import datetime
 import random
 import functions.titles as titles
+import functions.database as database
 #REVISAR QUÉ VARIABLES PUEDO PONER COMO GLOBALES (ej. players, cards...)
 
-def playGame(players,game,deck,cards,max_rounds):
-    game_variables = {}
+def playGame(players,game,deck,deckID,cards,max_rounds):
+    if deckID == 0 or deckID == 1:
+        gameID = database.newGame(deck = 1)
+    else:
+        gameID = database.newGame(deck = 2)
+    game_variables = {"gameID":gameID}
 
     print("*"*136 + "\n" + titles.title_seven_and_half_centred + "\n" + "*"*136)
 
@@ -36,7 +41,7 @@ def setGamePriority(players,game,deck,cards):
     for player in game:
         index_deck = random.randint(0,len(deck)-1) #Se elige aleatoriamente un indice de la lista
         players[player]["initialCard"] = deck[index_deck] #Se añade como carta inicial del jugador la carta que este en el índice elegido de la lista
-        print("The initial card of {} is {}.".format(players[player]["name"],players[player]["initialCard"]))
+
         used_cards.append(deck[index_deck]) #Metemos la carta que haya salido en used_cards
         deck.remove(deck[index_deck]) #Lo eliminamos de la lista de deck, para que dos jugadores no puedan tener la misma carta inicial
 
@@ -60,22 +65,26 @@ def setGamePriority(players,game,deck,cards):
         if not cambio:
             break
 
-    for i in range(len(game)):
-        players[game[i]]["priority"] = i+1 #Le ponemos a cada jugador su numero de prioridad
-        print("{} has priority {}.".format(players[game[i]]["name"],i+1))
-
+    summary = "*" * 60 + "\n" + "Name".center(20) + "Initial Card".center(20) + "Priority".center(
+        20) + "\n" + "*" * 60 + "\n"
     for i in range(len(game)):
         if i == len(game)-1:
-            players[game[i]]["bank"] = True #Al jugador de mayor prioridad, se le establece como banca
-            print("{}, the player with the most priority, is now the Bank!\n".format(players[game[i]]["name"]))
+            players[game[i]]["bank"] = True  # Al jugador de mayor prioridad, se le establece como banca
         else:
             players[game[i]]["bank"] = False
+        players[game[i]]["priority"] = i+1 #Le ponemos a cada jugador su numero de prioridad
+
+        summary += "{}".format(players[game[i]]["name"]).center(20) + "{}".format(players[game[i]]["initialCard"]).center(
+            20) + "{}".format(players[game[i]]["priority"]).center(20) + "\n"
+    print(summary)
+    print("{}, the player with the most priority, is now the Bank!\n".format(players[game[-1]]["name"]))
+
 
     input("Enter to continue")
 
 
 def playRound(players,game,deck,cards,round):
-    round_variables = {}
+    """round_variables = {}"""
 
     round +=1
     print("*" * 136 + "\n" + titles.title_seven_and_half_centred + "\n")
@@ -85,14 +94,16 @@ def playRound(players,game,deck,cards,round):
         players[player]["bet"] = 0 # Ponemos a 0 las apuestas de todos los jugadores, así evitamos que la banca de error al no tener bet
 
     losingPot = setBet(players,game)
-    input("Enter to continue")
     used_cards = []
 
     resettingPlayerRoundValues(players, game)
 
-    print("The first card of each player is about to be given!")
+    print("\nThe first card of each player is about to be given!\n")
+    summary = "*" * 60 + "\n" + "Name".center(20) + "Card".center(20) + "Round Points".center(20) + "\n" + "*" * 60 + "\n"
     for player in game:
         hitCard(players, player, game, deck, cards, used_cards,losingPot) #Se le da a todos los jugadores la primera carta de la ronda
+        summary += "{}".format(players[player]["name"]).center(20) + "{}".format(players[player]["cards"][0]).center(20) + "{}".format(players[player]["roundPoints"]).center(20) + "\n"
+    print(summary)
 
     for player in game:
         if players[player]["bank"]:
@@ -115,10 +126,12 @@ def playRound(players,game,deck,cards,round):
                 botRound(players, player, game, deck, cards, used_cards,losingPot)
                 input("Enter to continue")
 
+    showSummaryStats(players, game)
     givePoints_bankCandidates(players,game,losingPot)
     input("Enter to continue")
+    showSummaryStats(players,game)
     eliminatingPlayersWith0Points(players,game)
-    input("Enter to continue")
+    showSummaryStats(players,game)
 
     deck = deck + used_cards # Resetting the deck
     return round
@@ -135,7 +148,8 @@ def setBet(players,game):
                while True:
                    bet = input("Set your bet (or put 0 if you want it done automatically): ")
                    if not bet.isdigit():
-                       print("\nInvalid value.\n")
+                       print("\nInvalid value.")
+                       input("Enter to continue\n")
                    else:
                        bet = int(bet)
                        if bet == 0:
@@ -144,7 +158,8 @@ def setBet(players,game):
                            losingPot += players[player]["bet"]
                            break
                        elif bet > players[player]["points"]:
-                           print("\nInvalid value.\n")
+                           print("\nInvalid value.")
+                           input("Enter to continue\n")
                        else:
                            players[player]["bet"] = bet
                            print("Your bet as {} has been established as {} points.\n".format(players[player]["name"],players[player]["bet"]))
@@ -181,7 +196,7 @@ def humanRound(players,player,game,deck,cards,used_cards,losingPot):
             elif opt == 3:
                 percentage_risk = calculateRisk(players,player,deck,cards)
                 while True:
-                    answer = input("You have {}% chance of exceeding 7,5. Are you sure that you want another card? Y/N ".format(percentage_risk))
+                    answer = input("You have {:.1f}% chance of exceeding 7,5. Are you sure that you want another card? Y/N ".format(percentage_risk))
                     if not answer.isalpha():
                         print("\nInvalid answer\n")
                     elif answer.upper() == "Y":
@@ -255,7 +270,8 @@ def viewStats(players,player):
     + "Round Points:".ljust(68) + "{}".format(players[player]["roundPoints"]) + "\n"
 
     print("*" * 136 + "\n" + titles.title_stats_centred + "\n" + "*" * 136)
-    print(stats)
+    print("\n" + stats + "\n")
+    input("Enter to continue")
 
 def viewGameStats(players,game):
     char_player = 136//(len(game)+1)
@@ -290,19 +306,48 @@ def viewGameStats(players,game):
                 card_str += players[player]["cards"][i] + ","
         cards_str += card_str.ljust(char_player)
 
-    stats = "Name:".ljust(68) + "{}".format(name_str) + "\n" \
-    + "Bank:".ljust(68) + "{}".format(bank_str) + "\n"\
-    + "Type:".ljust(68) + "{}".format(type_str) + "\n"\
-    + "Human:".ljust(68) + "{}".format(human_str) + "\n"\
-    + "Initial Card:".ljust(68) + "{}".format(initialCard_str) + "\n"\
-    + "Priority:".ljust(68) + "{}".format(priority_str) + "\n"\
-    + "Bet:".ljust(68) + "{}".format(bet_str) + "\n"\
-    + "Points:".ljust(68) + "{}".format(points_str) + "\n"\
-    + "Cards:".ljust(68) + "{}".format(cards_str) + "\n"\
-    + "Round Points:".ljust(68) + "{}".format(roundPoints_str) + "\n"
+    stats = "Name:".ljust(char_player) + "{}".format(name_str).ljust(char_player) + "\n" \
+    + "Bank:".ljust(char_player) + "{}".format(bank_str).ljust(char_player) + "\n"\
+    + "Type:".ljust(char_player) + "{}".format(type_str).ljust(char_player) + "\n"\
+    + "Human:".ljust(char_player) + "{}".format(human_str).ljust(char_player) + "\n"\
+    + "Initial Card:".ljust(char_player) + "{}".format(initialCard_str).ljust(char_player) + "\n"\
+    + "Priority:".ljust(char_player) + "{}".format(priority_str).ljust(char_player) + "\n"\
+    + "Bet:".ljust(char_player) + "{}".format(bet_str).ljust(char_player) + "\n"\
+    + "Points:".ljust(char_player) + "{}".format(points_str).ljust(char_player) + "\n"\
+    + "Cards:".ljust(char_player) + "{}".format(cards_str).ljust(char_player) + "\n"\
+    + "Round Points:".ljust(char_player) + "{}".format(roundPoints_str).ljust(char_player) + "\n"
 
     print("*" * 136 + "\n" + titles.title_stats_centred + "\n" + "*" * 136)
-    print(stats)
+    print("\n" + stats + "\n")
+    input("Enter to continue")
+
+def showSummaryStats(players,game):
+    char_player = 136 // (len(game) + 1)
+
+    name_str = ""
+    bank_str = ""
+    type_str = ""
+    human_str = ""
+    priority_str = ""
+    points_str = ""
+
+    for player in game:
+        name_str += players[player]["name"].ljust(char_player).upper()
+        bank_str += str(players[player]["bank"]).ljust(char_player)
+        type_str += str(players[player]["type"]).ljust(char_player)
+        human_str += str(players[player]["human"]).ljust(char_player)
+        priority_str += str(players[player]["priority"]).ljust(char_player)
+        points_str += str(players[player]["points"]).ljust(char_player)
+
+    stats = "Name:".ljust(char_player) + "{}".format(name_str).ljust(char_player) + "\n" \
+            + "Bank:".ljust(char_player) + "{}".format(bank_str).ljust(char_player) + "\n" \
+            + "Type:".ljust(char_player) + "{}".format(type_str).ljust(char_player) + "\n" \
+            + "Human:".ljust(char_player) + "{}".format(human_str).ljust(char_player) + "\n" \
+            + "Priority:".ljust(char_player) + "{}".format(priority_str).ljust(char_player) + "\n" \
+            + "Points:".ljust(char_player) + "{}".format(points_str).ljust(char_player) + "\n"
+
+    print("\n" + stats + "\n")
+    input("Enter to continue")
 
 
 def hitCard(players, player, game, deck, cards, used_cards, losingPot):
@@ -310,7 +355,9 @@ def hitCard(players, player, game, deck, cards, used_cards, losingPot):
 
     players[player]["cards"].append(deck[index_deck])
     players[player]["roundPoints"] += cards[deck[index_deck]]["realValue"]
-    print("{} is {}'s card, which means {} has now {} points!".format(players[player]["cards"][-1],players[player]["name"],players[player]["name"],players[player]["roundPoints"]))
+
+    if len(players[player]["cards"]) != 1:
+        print("{} is {}'s card, which means {} has now {} points!".format(players[player]["cards"][-1],players[player]["name"],players[player]["name"],players[player]["roundPoints"]))
 
     used_cards.append(deck[index_deck])  # Metemos la carta que haya salido en used_cards
     deck.remove(deck[index_deck])  # Lo eliminamos de la lista de deck, para que dos jugadores no puedan sacar en una misma ronda la misma carta
@@ -472,6 +519,7 @@ def tooManyPoints(players, player, game, losingPot):
         if players[player]["roundPoints"] > 7.5:
             players[player]["points"] -= players[player]["bet"] # Le quitamos los puntos apostados al jugador que ha perdido
             players[game[-1]]["points"] += players[player]["bet"] # Le sumamos los puntos apostados del jugador que ha perdido a la banca
+
             losingPot -= players[player]["bet"] # Restamos la apuesta de este jugador a lo que tendría que pagar la banca si perdiera contra todos
 
             print("{} has too many round points and has lost the round!\nWhich means that {} has lost {} points, and now has {} points!\nTherefore, {}, the Bank, now has {} points!".format(players[player]["name"],players[player]["name"],players[player]["bet"],players[player]["points"],players[game[-1]]["name"],players[game[-1]]["points"]))
@@ -484,6 +532,7 @@ def eliminatingPlayersWith0Points(players,game):
         if players[player]["points"] == 0:
             print("{} has been eliminated from the game!".format(players[player]["name"]))
             game.remove(player)
+            input("Enter to continue")
 
 def resettingPlayerRoundValues(players,game):
     for player in game:
