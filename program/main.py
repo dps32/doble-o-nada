@@ -26,9 +26,8 @@ menu02 = "*"*136 + titles.title_settings_centred + "*"*136 + "\n" + "1) Set Game
 menu022 = "*"*136 + titles.title_card_deck_centred+ "*"*136 + "\n" + "1) Spanish Deck (48 cards)\n2) Spanish Deck (40 cards)\n3) Poker Deck\n4) Go back\n"
 menu04 = "*"*136 + titles.title_ranking_centred + "*"*136 + "\n" + "1) Players With More Earnings\n2) Players With More Games Played\n3) Players With More Minutes Played\n4) Go back\n"
 menu05 = "*"*136 + titles.title_reports_centred + "*"*136 + "\n" + "1) Initial card more repeated by each user,\nonly users who have played a minimum of 3 games.\n2) Player who makes the highest bet per game,\nfind the round with the highest bet.\n"\
-    + "3) Player who makes the lowest bet per game.\n4) Percentage of rounds won per player in each game (%),\nas well as their average bet for the game.\n5) List of games won by Bots.\n"\
-    + "6) Rounds won by the bank in each game.\n7) Number of users that have been the bank in each game.\n8) Average bet per game.\n9) Average bet of the first round of each game.\n"\
-    + "10) Average bet of the last round of each game.\n11) Go back"
+    + "3) Player who makes the lowest bet per game.\n4) Number of users that have been the bank in each game.\n5) Average bet per game.\n6) Average bet of the first round of each game.\n"\
+    + "7) Average bet of the last round of each game.\n8) Go back"
 
 exit = False
 flg_00 = True
@@ -197,7 +196,7 @@ while not exit:
             print("\nInvalid option\n")
         else:
             opt = int(opt)
-            if opt < 1 or opt > 11:
+            if opt < 1 or opt > 8:
                 print("\nInvalid option\n")
             elif opt == 1:
                 print("1")
@@ -213,12 +212,6 @@ while not exit:
                 print("6")
             elif opt == 7:
                 print("7")
-            elif opt == 8:
-                print("8")
-            elif opt == 9:
-                print("9")
-            elif opt == 10:
-                print("10")
             else:
                 flg_05 = False
                 flg_00 = True

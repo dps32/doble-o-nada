@@ -106,6 +106,14 @@ seven_and_half_ascii = """
 ██████╔╝███████╗░░╚██╔╝░░███████╗██║░╚███║  ██║░░██║██║░╚███║██████╔╝  ██║░░██║██║░░██║███████╗██║░░░░░
 ╚═════╝░╚══════╝░░░╚═╝░░░╚══════╝╚═╝░░╚══╝  ╚═╝░░╚═╝╚═╝░░╚══╝╚═════╝░  ╚═╝░░╚═╝╚═╝░░╚═╝╚══════╝╚═╝░░░░░
 """
+stats_ascii = """
+░██████╗████████╗░█████╗░████████╗░██████╗
+██╔════╝╚══██╔══╝██╔══██╗╚══██╔══╝██╔════╝
+╚█████╗░░░░██║░░░███████║░░░██║░░░╚█████╗░
+░╚═══██╗░░░██║░░░██╔══██║░░░██║░░░░╚═══██╗
+██████╔╝░░░██║░░░██║░░██║░░░██║░░░██████╔╝
+╚═════╝░░░░╚═╝░░░╚═╝░░╚═╝░░░╚═╝░░░╚═════╝░
+"""
 
 
 ranking_ascii = """
@@ -182,6 +190,7 @@ title_card_deck_centred = formatting.titleCentred(card_deck_ascii)
 title_set_max_rounds_centred = formatting.titleCentred(set_max_rounds_ascii)
 
 title_seven_and_half_centred = formatting.titleCentred(seven_and_half_ascii)
+title_stats_centred = formatting.titleCentred(stats_ascii)
 
 title_ranking_centred = formatting.titleCentred(ranking_ascii)
 title_more_earnings_centred = formatting.titleCentred(more_earnings_ascii)
