@@ -28,7 +28,19 @@
             <img class="bg-card" src="assets/img/cards/4.png">
             <h1>Programación</h1>
 
-            <p>Durante el desarrollo nos hemos enfrentado a varios problemas, aunque ninguno fue lo suficientemente grave como para hacernos perder demasiado tiempo.</p>
+            <p>Durante el desarrollo nos hemos enfrentado a varios retos y a continuación explicaremos cómo hemos resuelto algunos de los problemas que nos hemos encontrado.</p>
+
+            <div class="section">
+                <h3>Lógica de la Banca</h3>
+                <p>
+                    Para gestionar la lógica de la banca y decidir si debe pedir una carta, hemos implementado una función que evalúa una serie de condiciones. Estas condiciones determinan si la banca debe o no tomar otra carta, y funcionan de la siguiente manera:</p><ul>
+                    <li>Si la banca tiene una puntuación igual o superior a <span class="highlight">7,5</span>, no pedirá otra carta.</li>
+                    <li>Si ningún jugador supera la puntuación actual de la banca, tampoco pedirá otra carta.</li>
+                    <li>Si la banca tiene menos puntos que los necesarios para poder pagar a los jugadores contra los que pierde, estará obligada a pedir una carta.</li>
+                    <li>En caso de que ninguna de estas condiciones se cumpla, se llama a una función adicional que evalúa el riesgo de pedir una carta calculando el porcentaje de probabilidades de que la banca se pase del <span class="highlight">7,5</span>.</li>
+                </ul>
+                <p>Si el riesgo de pasarse es menor al nivel de riesgo que puede asumir la banca, esta pedirá otra carta, de lo contrario, se plantará.</p>
+            </div>
 
             <div class="section">
                 <h3>Problemas con la base de datos</h3>
