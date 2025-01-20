@@ -1,5 +1,3 @@
-from datetime import datetime
-import random
 import functions.database as database
 import functions.option_one_functions as option_one_functions
 import functions.option_two_functions as option_two_functions
