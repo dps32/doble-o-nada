@@ -19,7 +19,7 @@ JOIN
 JOIN 
     cards c ON pr.first_card_in_hand = c.card_id -- Relación cartas iniciales
 WHERE 
-    r.round_number = 0 -- Considerar solo la ronda inicial (ronda 0)
+    r.round_number = 0 AND p.deleted = 0 -- Considerar solo la ronda inicial (ronda 0) y jugadores no borrados
 GROUP BY 
     p.player_id, c.card_id -- Agrupar por jugador y carta inicial
 HAVING 
