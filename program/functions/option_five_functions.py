@@ -5,13 +5,13 @@ def report1():
     print("*" * 136 + titles.title_reports_centred + "*" * 136)
     report1 = database.query("SELECT * FROM player_initial_card_statistics")
 
-    data = "*" * 80 + "\n" + "DNI".ljust(10) + "Name".ljust(15) + "Suit".rjust(10) + "Initial Card".rjust(
-        15) + "Times Repeated".rjust(15) + "Total Games".rjust(15) + "\n" + "*" * 80 + "\n"
+    data = "*" * 90 + "\n" + "DNI".ljust(10) + "Name".ljust(15) + "Suit".rjust(10) + "Initial Card".rjust(
+        25) + "Times Repeated".rjust(15) + "Total Games".rjust(15) + "\n" + "*" * 90 + "\n"
 
     for entry in report1:
         nif = database.query("SELECT dni FROM players WHERE player_id = %s", (entry['player_id'],))
         nif = nif[0]['dni']
-        data += nif.ljust(10) + entry['player_name'].ljust(15) + entry['suit'].rjust(10) + entry['initial_card_name'].rjust(15) + entry['times_repeated'].rjust(15) + entry['total_games'].rjust(15) + "\n"
+        data += nif.ljust(10) + entry['player_name'].ljust(15) + entry['suit'].rjust(10) + entry['most_repeated_card'].rjust(25) + str(entry['times_repeated']).rjust(15) + str(entry['total_games']).rjust(15) + "\n"
 
     print(data)
     input("Enter to continue\n")
