@@ -159,7 +159,8 @@ while not exit:
         deck = list(cards.keys())
 
         if len(game) >= 2:
-            game_variables = {"players":players,"original_game":original_game,"game":game,"cards":cards,"deck":deck,"deck_id":possible_decks.index(deck_name),"round":0,"max_rounds":max_rounds}
+            game = original_game.copy()
+            game_variables = {"players":players,"game":game,"cards":cards,"deck":deck,"deck_id":possible_decks.index(deck_name),"round":0,"max_rounds":max_rounds}
             option_three_functions.playGame(game_variables)
         else:
             print("\nYou cannot play. Please, choose at least 2 players for the game.")
