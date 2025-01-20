@@ -15,6 +15,8 @@ JOIN
     rounds r ON pr.round_id = r.round_id -- Relación entre rondas y partidas
 JOIN 
     games g ON r.game_id = g.game_id  -- Relación entre partidas y su duración
+WHERE
+	p.deleted = 0  -- Solo recibir jugadores no borrados
 GROUP BY 
     p.player_id  -- Agrupar por jugador
 ORDER BY 
