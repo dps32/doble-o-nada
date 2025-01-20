@@ -1,4 +1,5 @@
 use sieteymedio;
+
 CREATE VIEW player_initial_card_statistics AS
 SELECT 
     p.player_id AS player_id, -- ID del player
@@ -25,4 +26,3 @@ HAVING
     COUNT(DISTINCT r.game_id) >= 3 -- Solo players que hayan jugado al menos 3 partidas
 ORDER BY 
     p.player_id, times_repeated DESC; -- Ordenar por jugador y frecuencia
-
