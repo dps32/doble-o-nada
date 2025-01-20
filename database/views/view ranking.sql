@@ -4,7 +4,7 @@ CREATE VIEW players_ranking AS
 SELECT 
     p.player_id AS player_id,  -- ID del jugador
     p.name AS player_name,  -- Nombre del jugador
-    SUM(pr.end_points - pr.start_points) AS total_gains, -- Ganancias totales obtenidas
+    p.points AS total_gains, -- Ganancias totales obtenidas
     COUNT(DISTINCT r.game_id) AS total_games, -- Total de partidas jugadas
     p.time AS total_minutes_played -- Minutos totales jugados acumulados
 FROM 
