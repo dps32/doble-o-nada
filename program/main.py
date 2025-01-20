@@ -1,5 +1,3 @@
-from datetime import datetime
-import random
 import functions.database as database
 import functions.option_one_functions as option_one_functions
 import functions.option_two_functions as option_two_functions
@@ -14,6 +12,7 @@ players = database.getPlayers()
 
 #MODIFICAR
 game = []
+original_game = []
 possible_decks = ["SPANISH (48 cards)","SPANISH (40 cards)","POKER"]
 deck_name = "SPANISH (40 cards)"
 context_game = {"game":[],"round":0}
@@ -25,7 +24,7 @@ menu01 = "*"*136 + titles.title_bbdd_players_centred + "*"*136 + "\n" + "1) New 
 menu02 = "*"*136 + titles.title_settings_centred + "*"*136 + "\n" + "1) Set Game Players\n2) Set Card's Deck\n3) Set Max Rounds (Default 5 Rounds)\n4) Go back\n"
 menu022 = "*"*136 + titles.title_card_deck_centred+ "*"*136 + "\n" + "1) Spanish Deck (48 cards)\n2) Spanish Deck (40 cards)\n3) Poker Deck\n4) Go back\n"
 menu04 = "*"*136 + titles.title_ranking_centred + "*"*136 + "\n" + "1) Players With More Earnings\n2) Players With More Games Played\n3) Players With More Minutes Played\n4) Go back\n"
-menu05 = "*"*136 + titles.title_reports_centred + "*"*136 + "\n" + "1) Initial card more repeated by each user,\nonly users who have played a minimum of 3 games.\n2) Player who makes the highest bet per game,\nfind the round with the highest bet.\n"\
+menu05 = "*"*136 + titles.title_reports_centred + "*"*136 + "\n" + "1) Initial card more repeated by each user, only users who have played a minimum of 3 games.\n2) Player who makes the highest bet per game.\n"\
     + "3) Player who makes the lowest bet per game.\n4) Number of users that have been the bank in each game.\n5) Average bet per game.\n6) Average bet of the first round of each game.\n"\
     + "7) Average bet of the last round of each game.\n8) Go back"
 
@@ -151,6 +150,7 @@ while not exit:
         continue_picking = option_two_functions.pickParticipants(game, players)
 
         if not continue_picking:
+            original_game = game.copy() # Así tendremos una lista de participantes que no habrá sido modificada durante el juego
             flg_021 = False
             flg_02 = True
 
@@ -159,7 +159,9 @@ while not exit:
         deck = list(cards.keys())
 
         if len(game) >= 2:
-            option_three_functions.playGame(players,game,deck,possible_decks.index(deck_name),cards,max_rounds)
+            game_variables = {"players":players,"original_game":original_game,"game":game,"cards":cards,"deck":deck,"deck_id":possible_decks.index(deck_name),"round":0,"max_rounds":max_rounds}
+            option_three_functions.playGame(game_variables)
+            game_variables.clear()
         else:
             print("\nYou cannot play. Please, choose at least 2 players for the game.")
             input("Enter to continue\n")
@@ -179,11 +181,11 @@ while not exit:
                 print("\nInvalid option")
                 input("Enter to continue\n")
             elif opt == 1:
-                print("1")
+                option_four_functions.rankingMoreEarnings()
             elif opt == 2:
-                print("2")
+                option_four_functions.rankingMoreGames()
             elif opt == 3:
-                print("3")
+                option_four_functions.rankingMoreMinutes()
             else:
                 flg_04 = False
                 flg_00 = True
@@ -200,19 +202,19 @@ while not exit:
                 print("\nInvalid option")
                 input("Enter to continue\n")
             elif opt == 1:
-                print("1")
+                option_five_functions.report1()
             elif opt == 2:
-                print("2")
+                option_five_functions.report2()
             elif opt == 3:
-                print("3")
+                option_five_functions.report3()
             elif opt == 4:
-                print("4")
+                option_five_functions.report7()
             elif opt == 5:
-                print("5")
+                option_five_functions.report8()
             elif opt == 6:
-                print("6")
+                option_five_functions.report9()
             elif opt == 7:
-                print("7")
+                option_five_functions.report10()
             else:
                 flg_05 = False
                 flg_00 = True

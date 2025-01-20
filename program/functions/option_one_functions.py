@@ -59,8 +59,9 @@ def newHuman(players):
         else:
             save = save.upper()
             if save == "Y":
-                players[nif] = {"name": name, "human": True, "type": profile}
-                database.insertPlayer(nif, name, profile, 0)
+                playerID = database.insertPlayer(nif, name, profile, 0)
+                players[nif] = {"player_id":playerID,"name": name, "human": True, "type": profile}
+
                 print("You have inserted {}, a new human, into the database.".format(name))
                 input("Enter to continue\n")
                 return
@@ -115,8 +116,9 @@ def newBot(players):
         else:
             save = save.upper()
             if save == "Y":
-                players[nif] = {"name": name, "human": False, "type": profile}
-                database.insertPlayer(nif, name, profile, 1)
+                playerID = database.insertPlayer(nif, name, profile, 1)
+                players[nif] = {"playerID":playerID,"name": name, "human": False, "type": profile}
+
                 print("You have inserted {}, a new bot, into the database.".format(name))
                 input("Enter to continue\n")
                 return
