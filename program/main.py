@@ -12,6 +12,7 @@ players = database.getPlayers()
 
 #MODIFICAR
 game = []
+original_game = []
 possible_decks = ["SPANISH (48 cards)","SPANISH (40 cards)","POKER"]
 deck_name = "SPANISH (40 cards)"
 context_game = {"game":[],"round":0}
@@ -149,6 +150,7 @@ while not exit:
         continue_picking = option_two_functions.pickParticipants(game, players)
 
         if not continue_picking:
+            original_game = game.copy() # Así tendremos una lista de participantes que no habrá sido modificada durante el juego
             flg_021 = False
             flg_02 = True
 
@@ -157,7 +159,7 @@ while not exit:
         deck = list(cards.keys())
 
         if len(game) >= 2:
-            game_variables = {"players":players,"game":game,"cards":cards,"deck":deck,"deck_id":possible_decks.index(deck_name),"round":0,"max_rounds":max_rounds}
+            game_variables = {"players":players,"original_game":original_game,"game":game,"cards":cards,"deck":deck,"deck_id":possible_decks.index(deck_name),"round":0,"max_rounds":max_rounds}
             option_three_functions.playGame(game_variables)
             game_variables.clear()
         else:
