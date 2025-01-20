@@ -160,7 +160,6 @@ while not exit:
 
         if len(game) >= 2:
             game_variables = {"players":players,"game":game,"cards":cards,"deck":deck,"deck_id":possible_decks.index(deck_name),"round":0,"max_rounds":max_rounds}
-            #option_three_functions.playGame(players,game,deck,possible_decks.index(deck_name),cards,max_rounds)
             option_three_functions.playGame(game_variables)
             game_variables.clear()
         else:

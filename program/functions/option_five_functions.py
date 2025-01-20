@@ -1,6 +1,7 @@
 import functions.database as database
 import functions.titles as titles
 
+
 def report1():
     print("*" * 136 + titles.title_reports_centred + "*" * 136)
     report1 = database.query("SELECT * FROM player_initial_card_statistics")
