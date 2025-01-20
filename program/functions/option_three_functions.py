@@ -31,7 +31,7 @@ def playGame(game_variables):
 
     winner(game_variables)
     database.updateGameEndTime(game_variables["game_id"], datetime.now().replace(microsecond=0))
-    game_variables["game"] = game_variables["original_game"].copy() # Se resetea la lista de game (que al final de la partida puede tener menos participantes), se hace porque si después juegas otra partida tengas a todos los jugadores
+
     input("Enter to continue\n")
 
 def resetPointsInitialCard(players,game):
@@ -130,7 +130,7 @@ def playRound(game_variables):
     for player in game_variables["game"]:
         game_variables["round_players"][player] = {"player_id":game_variables["players"][player]["player_id"],"is_bank":game_variables["players"][player]["bank"],"start_points":game_variables["players"][player]["points"],"end_points":0,"player_bet":game_variables["players"][player]["bet"],"first_card":game_variables["players"][player]["cards"][0]} # Ponemos end_points=0 por si algun jugador es eliminado en la ronda y si no lo es, al recorrer la lista de participantes al final de la ronda se corregirán los puntos finales de la ronda
 
-    for i in range(len(game_variables["game"])-1):
+    for i in range(len(game_variables["game"])):
         if game_variables["players"][game_variables["game"][i]]["bank"]:
             print("*" * 136 + "\n" + titles.title_seven_and_half_centred + "\n" + "*" * 136)
             print("{}'s (BANK) turn (round {})".format(game_variables["players"][game_variables["game"][i]]["name"],game_variables["round"]).center(136,"*") + "\n")
@@ -152,9 +152,10 @@ def playRound(game_variables):
                 input("Enter to continue\n")
 
     eliminatingPlayersWith0Points(game_variables)
-    givePoints_bankCandidates(game_variables)
-    input("Enter to continue\n")
-    eliminatingPlayersWith0Points(game_variables)
+    if len(game_variables["game"]) > 1:
+        givePoints_bankCandidates(game_variables)
+        input("Enter to continue\n")
+        eliminatingPlayersWith0Points(game_variables)
     showSummaryStats(game_variables["players"],game_variables["game"])
 
     for player in game_variables["round_players"]:
@@ -168,7 +169,7 @@ def setBet(game_variables,players,game):
    game_variables["losingPot"] = 0
    for player in game:
        if players[player]["bank"]:
-           continue
+           print("As Bank, {} doesn't have to set a bet.".format(game_variables["players"][player]["name"]))
 
        else:
            print("{}'s turn".format(players[player]["name"]).center(136, "*") + "\n")
@@ -197,6 +198,7 @@ def setBet(game_variables,players,game):
                            print("Your bet as {} has been established as {} points.\n".format(players[player]["name"],players[player]["bet"]))
                            game_variables["losingPot"] += bet
                            break
+
            else:
                bet = int(players[player]["points"]*(players[player]["type"]/100))
                if bet < 1:
@@ -630,6 +632,12 @@ def winner(game_variables):
                     aux = game_variables["game"][i + 1]
                     game_variables["game"][i + 1] = game_variables["game"][i]
                     game_variables["game"][i] = aux
+                elif game_variables["players"][game_variables["game"][i + 1]]["points"] == game_variables["players"][game_variables["game"][i]]["points"]:
+                    if game_variables["players"][game_variables["game"][i + 1]]["priority"] > game_variables["players"][game_variables["game"][i]]["priority"]:
+                        cambio = True
+                        aux = game_variables["game"][i + 1]
+                        game_variables["game"][i + 1] = game_variables["game"][i]
+                        game_variables["game"][i] = aux
             if not cambio:
                 break
         if game_variables["round"] == game_variables["max_rounds"]:
