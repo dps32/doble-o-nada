@@ -18,10 +18,11 @@ JOIN
 JOIN 
     cards c ON pr.first_card_in_hand = c.card_id -- Relación cartas iniciales
 WHERE 
-    r.round_number = 0 -- Considerar primera ronda
+    r.round_number = 0 AND p.deleted = 0 -- Considerar solo la ronda inicial (ronda 0) y jugadores no borrados
 GROUP BY 
     p.player_id, c.card_id, suit -- Agrupar jugador y carta inicial
 HAVING 
     COUNT(DISTINCT r.game_id) >= 3 -- Solo players que hayan jugado al menos 3 partidas
 ORDER BY 
     p.player_id, times_repeated DESC; -- Ordenar por jugador y frecuencia
+

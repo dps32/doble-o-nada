@@ -72,7 +72,7 @@ def getCards(id):
 
 
 def getPlayers():
-    players = query("SELECT * FROM players")
+    players = query("SELECT * FROM players WHERE deleted = 0")
 
     result = {}
 
@@ -132,7 +132,7 @@ def updatePlayerPoints(playerId, points):
 
 # borra a un jugador de la base de datos
 def deletePlayer(dni):
-    return query("DELETE FROM players WHERE dni = %s", (dni,))
+    return query("UPDATE players SET deleted = 1 WHERE dni = %s", (dni,))
 
 # saca el ranking de la base de datos
 def getRanking():
