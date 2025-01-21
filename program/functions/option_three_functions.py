@@ -43,7 +43,9 @@ def playGame(game_variables):
     database.updateGameEndTime(game_variables["game_id"], datetime.now().replace(microsecond=0))
 
     # Se actualizarán los puntos de los jugadores que tengan más de 20 puntos al final de la partida (se sumarán los puntos finales menos los 20 iniciales)
+    # También se actualizará el tiempo de juego de todos los jugadores que sigan jugando (para los que han sido eliminados ya ha sido actualizado)
     for player in game_variables["game"]:
+        database.updatePlayerGameTime(game_variables["players"][player]["player_id"], ((datetime.now().replace(microsecond=0) - game_variables["start_time"]).total_seconds() // 60))
         if game_variables["players"][player]["points"] > 20:
             database.updatePlayerPoints(game_variables["players"][player]["player_id"], game_variables["players"][player]["points"]-20)
 
@@ -290,7 +292,6 @@ def botRound(game_variables,player):
             print("\n{} wants another card.\n".format(game_variables["players"][player]["name"]))
             hitCard(game_variables,player)
         else:
-            print("\n{} stands with {} points!\n".format(game_variables["players"][player]["name"],game_variables["players"][player]["roundPoints"]))
             break
     return
 

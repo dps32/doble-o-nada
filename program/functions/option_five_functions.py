@@ -36,7 +36,7 @@ def report2():
     for entry in report2:
         nif = database.query("SELECT dni FROM players WHERE player_id = %s", (entry['player_id'],))
         nif = nif[0]['dni']
-        data += str(entry['game_id']).ljust(10) + nif.ljust(10) + str(entry['highest_bet']).rjust(15) + "\n"
+        data += str(entry['game_id']).ljust(10) + nif.ljust(10) + str(entry['player_bet']).rjust(15) + "\n"
 
     print(data)
     input("Enter to continue\n")

@@ -42,15 +42,15 @@ def showPlayersToChoose(game,players):
 
     while len(human_list) != 0 or len(bot_list) != 0:
         if len(human_list) == 0:
-            data += " " * 66 + "||" + " " + bot_list[0].ljust(19) + players[bot_list[0]]["name"].ljust(27) + str(
+            data += " " * 67 + "||" + " " + bot_list[0].ljust(19) + players[bot_list[0]]["name"].ljust(27) + str(
                 players[bot_list[0]]["type"]).ljust(20) + "\n"
             bot_list.remove(bot_list[0])
         elif len(bot_list) == 0:
-            data += human_list[0].ljust(19) + players[human_list[0]]["name"].ljust(
+            data += human_list[0].ljust(20) + players[human_list[0]]["name"].ljust(
                 27) + str(players[human_list[0]]["type"]).ljust(20) + "||" + " " * 67 + "\n"
             human_list.remove(human_list[0])
         else:
-            data += human_list[0].ljust(19) + players[human_list[0]]["name"].ljust(
+            data += human_list[0].ljust(20) + players[human_list[0]]["name"].ljust(
                 27) + str(players[human_list[0]]["type"]).ljust(20) + "||" + " " + bot_list[0].ljust(19) + \
                     players[bot_list[0]]["name"].ljust(27) + str(players[bot_list[0]]["type"]).ljust(20) + "\n"
             bot_list.remove(bot_list[0])
