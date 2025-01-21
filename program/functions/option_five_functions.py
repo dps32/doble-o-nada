@@ -1,5 +1,16 @@
+"""
+En este archivo se presentan las funciones utilizadas para la opción 5 del menú principal del programa.
+
+Grupo: Doble o Nada
+"""
+
 import functions.database as database
 import functions.titles as titles
+
+# Todas las funciones funcionan de la misma manera:
+# - Obtienen la vista correspondiente de la BBDD
+# - Se imprime la cabecera de la tabla a imprimir
+# - Se le suman fila a fila los datos de la vista
 
 def report1():
     print("*" * 136 + titles.title_reports_centred + "*" * 136)

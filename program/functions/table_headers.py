@@ -1,3 +1,9 @@
+"""
+En este archivo se presentan las cabeceras para las tablas principales de este programa.
+
+Grupo: Doble o Nada
+"""
+
 import functions.titles as titles
 
 show_remove_header = "*" * 136 + titles.title_show_remove_centred + "*" * 136 + "\n" + "Select players".center(136,"*") + "\n" + "Bot Players".center(67) + "||" + "Human Players".center(67) \

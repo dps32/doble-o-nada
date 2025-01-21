@@ -1,10 +1,19 @@
+"""
+En este archivo se presentan las funciones utilizadas para la opción 4 del menú principal del programa.
+
+Grupo: Doble o Nada
+"""
+
 import functions.titles as titles
 import functions.database as database
 
-ranking = database.getRanking()
-
+# Sacamos los datos de la vista para cada vez que se ejecuta una de estas funciones por si hay una partida de por medio y los datos han sido actualizados
+# Ordenamos una lista con las keys del ranking según el criterio elegido (ganancias, partidas o minutos)
+# Para ordenar las lista utilizamos el algoritmo de la burbúja
 
 def rankingMoreEarnings():
+    ranking = database.getRanking()  # Sacamos la vista de ranking de la BBDD en forma de diccionario
+
     print("*"*136 + titles.title_more_earnings_centred + "*"*136)
     ranking_earnings = list(ranking.keys())
 
@@ -29,8 +38,9 @@ def rankingMoreEarnings():
     input("Enter to continue\n")
 
 def rankingMoreGames():
-    print(titles.title_more_games_played)
+    ranking = database.getRanking()  # Sacamos la vista de ranking de la BBDD en forma de diccionario
 
+    print(titles.title_more_games_played)
     ranking_games = list(ranking.keys())
 
     if len(ranking_games) > 1:
@@ -56,8 +66,9 @@ def rankingMoreGames():
     input("Enter to continue\n")
 
 def rankingMoreMinutes():
-    print(titles.title_more_minutes_played)
+    ranking = database.getRanking()  # Sacamos la vista de ranking de la BBDD en forma de diccionario
 
+    print(titles.title_more_minutes_played)
     ranking_minutes = list(ranking.keys())
 
     if len(ranking_minutes) > 1:

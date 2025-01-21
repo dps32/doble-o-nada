@@ -1,3 +1,13 @@
+"""
+En este archivo se presentan las funciones utilizadas para la conexión a la BBDD alojada en Azure,
+así como también para su modificación, para obtener datos alojados, entre otros.
+Las únicas funciones que permiten obtiener datos de la BBDD y no se encuentran en este archivo son
+las necesarias para los reportes (opción 5 del menú principal) y que se encuentran incluidas en el archivo
+de las funciones de la opción 5.
+
+Grupo: Doble o Nada
+"""
+
 import mysql.connector
 from mysql.connector import Error
 
@@ -70,7 +80,7 @@ def getCards(id):
     
     return result
 
-
+# devuelve un diccionario con los jugadores que hay en la BBDD
 def getPlayers():
     players = query("SELECT * FROM players WHERE deleted = 0")
 
@@ -107,7 +117,7 @@ def newRound(gameId, roundNumber):
 
 
 # insertar un jugador en una ronda
-# se debe insertar al final de cada ronda por cada jugador que siga jugando
+# se debe insertar al final de cada ronda por cada jugador que ha jugado en esa ronda
 def insertPlayerRound(round_id, is_bank, player_id, start_points, end_points, player_bet, first_card_in_hand):
     return query("INSERT INTO player_rounds (round_id, is_bank, player_id, start_points, end_points, player_bet, first_card_in_hand) VALUES (%s, %s, %s, %s, %s, %s, %s)", (round_id, is_bank, player_id, start_points, end_points, player_bet, first_card_in_hand))
 
@@ -140,7 +150,7 @@ def getRanking():
     result = {}
 
     for entry in ranking:
-        nif = query("SELECT dni FROM players WHERE player_id = %s",(entry['player_id'],))
+        nif = query("SELECT dni FROM players WHERE player_id = %s",(entry['player_id'],)) # consigue el DNI de los jugadores que hay en el ranking (a partir de sus IDs)
         nif = nif[0]['dni']
         result[nif] = {"name":entry['player_name'],"total_gains":entry['total_gains'],"total_games":entry['total_games'],"total_minutes":entry['total_minutes_played']}
 

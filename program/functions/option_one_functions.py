@@ -1,20 +1,30 @@
+"""
+En este archivo se presentan las funciones utilizadas para la opción 1 del menú principal del programa.
+
+Grupo: Doble o Nada
+"""
+
 import random
 import functions.database as database
 import functions.titles as titles
 
 lettersNIF = ['T','R','W','A','G','M','Y','F','P','D','X','B','N','J','Z','S','Q','V','H','L','C','K','E']
+
+# Función que permite añadir un nuevo jugador humano
 def newHuman(players):
+    # Se comprueba que el nombre tenga solo caracteres alfabéticos y que no sea más largo que 15 caracteres
     while True:
         name = input("Name: ")
         if not name.isalpha():
             print("\nInvalid name.")
             input("Enter to continue\n")
-        elif len(name) > 32:
+        elif len(name) > 15:
             print("\nThe name is too long.")
             input("Enter to continue\n")
         else:
             name = name.title()
             break
+    # Se comprueba que el DNI escrito sea válido
     while True:
         nif = input("NIF: ")
         if not len(nif) == 9:
@@ -29,6 +39,7 @@ def newHuman(players):
                 input("Enter to continue\n")
             else:
                 break
+    # Se comprueba que se elija una de las tres posibles opciones
     while True:
         opt = input("Select your Profile:\n1) Cautious\n2) Moderated\n3) Bold\nOption: ")
         if not opt.isdigit():
@@ -48,6 +59,7 @@ def newHuman(players):
             else:
                 profile = 50
                 break
+    # Se imprime la información del nuevo jugador y se pregunta si se quiere o no guardar
     while True:
         print("*" * 136 + titles.title_new_human_centred + "*" * 136 + "\n")
         print("NIF: {}\nName: {}\nType: {}\n".format(nif,name,profile))
@@ -71,21 +83,25 @@ def newHuman(players):
                 print("\nInvalid answer.")
                 input("Enter to continue\n")
 
+# Función que permite añadir un nuevo jugador bot
 def newBot(players):
+    # Se comprueba que el nombre tenga solo caracteres alfabéticos y que no sea más largo que 15 caracteres
     while True:
         name = input("Name: ")
         if not name.isalpha():
             print("\nInvalid name.")
             input("Enter to continue\n")
-        elif len(name) > 26:
+        elif len(name) > 15:
             print("\nThe name is too long.")
             input("Enter to continue\n")
         else:
             name = name.title()
             break
+    # Se genera un DNI para ese bot
     nif = random.randint(10000000,99999999)
     nif = str(nif) + lettersNIF[nif%23]
     print("NIF: ",nif)
+    # Se comprueba que se elija una de las tres posibles opciones
     while True:
         opt = input("Select your Profile:\n1) Cautious\n2) Moderated\n3) Bold\nOption: ")
         if not opt.isdigit():
@@ -105,6 +121,7 @@ def newBot(players):
             else:
                 profile = 50
                 break
+    # Se imprime la información del nuevo jugador y se pregunta si se quiere o no guardar
     while True:
         print("*" * 136 + titles.title_new_bot_centred + "*" * 136 + "\n")
         print("NIF: {}\nName: {}\nType: {}\n".format(nif, name, profile))
@@ -128,6 +145,7 @@ def newBot(players):
                 print("\nInvalid answer.")
                 input("Enter to continue\n")
 
+# Se imprimen todos los jugadores que hay en la BBDD en dos columnas (separando humanos y bots)
 def showPlayers(players):
     data = ""
     human_list = []
@@ -156,6 +174,7 @@ def showPlayers(players):
     data += "*" * 136
     print(data)
 
+# Opción que te permite borrar jugadores
 def removePlayers(players):
     opt = input("\n->Option ( -id to remove player, -1 to exit): ")
     if opt[0] != "-":

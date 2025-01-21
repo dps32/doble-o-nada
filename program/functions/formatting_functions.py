@@ -1,3 +1,10 @@
+"""
+En este archivo se presenta la función que permite centrar los títulos en ASCII.
+
+Grupo: Doble o Nada
+"""
+
+#Función que centra línea a línea las strings de los títulos en ASCII
 def titleCentred(title_ascii,width=136):
     title_centred = ""
     for i in range(title_ascii.count("\n")):
