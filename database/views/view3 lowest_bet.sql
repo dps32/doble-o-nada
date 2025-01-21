@@ -9,6 +9,8 @@ FROM
     player_rounds pr -- Tabla de rondas por jugador
 JOIN 
     rounds r ON pr.round_id = r.round_id -- Relacionar las rondas con las partidas
+WHERE
+	pr.player_bet > 0 -- Ignora las apuestas igual a 0 (las de la banca)
 GROUP BY 
     r.game_id, pr.player_id -- Agrupar por partida y jugador
 HAVING 
@@ -16,7 +18,8 @@ HAVING
         SELECT MIN(pr2.player_bet)
         FROM player_rounds pr2
         JOIN rounds r2 ON pr2.round_id = r2.round_id
-        WHERE r2.game_id = r.game_id
+        WHERE r2.game_id = r.game_id AND
+			pr2.player_bet > 0 -- Ignora las apuestas igual a 0 (las de la banca)
     )
 ORDER BY 
     lowest_bet ASC, -- Ordenar por apuesta más baja (ascendente)
