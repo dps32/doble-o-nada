@@ -2,27 +2,47 @@ use sieteymedio;
 
 CREATE VIEW player_initial_card_statistics AS
 SELECT 
-    p.player_id AS player_id, -- ID del player
-    p.name AS player_name, -- name del player
-    SUBSTRING_INDEX(c.name, ' ', -1) AS suit, -- Palo de la carta 
-    c.name AS most_repeated_card, -- Nombre completo de la carta 
-    COUNT(*) AS times_repeated, -- Número de veces repetida
-    COUNT(DISTINCT r.game_id) AS total_games -- Total games
-FROM 
-    players p
-JOIN 
-    player_rounds pr ON p.player_id = pr.player_id -- Relación jugadores-rondas
-JOIN 
-    rounds r ON pr.round_id = r.round_id -- Relación rondas-partidas
-JOIN 
-    games g ON r.game_id = g.game_id -- Relación partidas
-JOIN 
-    cards c ON pr.first_card_in_hand = c.card_id -- Relación cartas iniciales
+    player_id,
+    player_name,
+    suit,
+    most_repeated_card,
+    times_repeated,
+    total_games
+FROM
+(
+    SELECT 
+        p.player_id,
+        p.name AS player_name,
+        SUBSTRING_INDEX(c.name, ' ', -1) AS suit,
+        c.name AS most_repeated_card,
+        COUNT(*) AS times_repeated,
+        (
+            SELECT COUNT(DISTINCT gp.game_id)
+            FROM game_players gp
+            WHERE gp.player_id = p.player_id
+        ) AS total_games,
+        
+        -- Asignamos un "ranking" según la cantidad de repeticiones (descendente)
+        ROW_NUMBER() OVER (
+            PARTITION BY p.player_id
+            ORDER BY COUNT(*) DESC
+        ) AS rn
+        
+    FROM players p
+    JOIN player_rounds pr 
+        ON p.player_id = pr.player_id
+    JOIN rounds r 
+        ON pr.round_id = r.round_id
+    JOIN games g 
+        ON r.game_id = g.game_id
+    JOIN cards c 
+        ON pr.first_card_in_hand = c.card_id
+    WHERE r.round_number = 0       -- Cartas iniciales (ronda 0)
+      AND p.deleted = 0            -- Jugadores no eliminados
+    GROUP BY p.player_id, c.card_id, suit, c.name
+) AS sub
 WHERE 
-    r.round_number = 0 AND p.deleted = 0 -- Considerar solo la ronda inicial (ronda 0) y jugadores no borrados
-GROUP BY 
-    p.player_id, c.card_id, suit -- Agrupar jugador y carta inicial
-HAVING 
-    COUNT(DISTINCT r.game_id) >= 3 -- Solo players que hayan jugado al menos 3 partidas
+    sub.total_games >= 3  -- Solo jugadores con al menos 3 partidas
+    AND sub.rn = 1        -- Solo la carta más repetida (la "número 1" en el ranking)
 ORDER BY 
-    p.player_id, times_repeated DESC; -- Ordenar por jugador y frecuencia
+    sub.player_id;
