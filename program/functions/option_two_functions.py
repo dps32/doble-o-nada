@@ -1,6 +1,13 @@
+"""
+En este archivo se presentan las funciones utilizadas para la opción 2 del menú principal del programa.
+
+Grupo: Doble o Nada
+"""
+
 import functions.titles as titles
 import functions.table_headers as table_headers
 
+# Se muestran los participantes (los jugadores ya seleccionados para jugar)
 def showParticipants(game,players):
     print(table_headers.participants_header)
 
@@ -21,6 +28,7 @@ def showParticipants(game,players):
 
     print(data)
 
+# Se muestran los jugadores entre los que puedes elegir los participantes
 def showPlayersToChoose(game,players):
     data = ""
     human_list = []
@@ -34,15 +42,15 @@ def showPlayersToChoose(game,players):
 
     while len(human_list) != 0 or len(bot_list) != 0:
         if len(human_list) == 0:
-            data += " " * 66 + "||" + " " + bot_list[0].ljust(19) + players[bot_list[0]]["name"].ljust(27) + str(
+            data += " " * 67 + "||" + " " + bot_list[0].ljust(19) + players[bot_list[0]]["name"].ljust(27) + str(
                 players[bot_list[0]]["type"]).ljust(20) + "\n"
             bot_list.remove(bot_list[0])
         elif len(bot_list) == 0:
-            data += human_list[0].ljust(19) + players[human_list[0]]["name"].ljust(
+            data += human_list[0].ljust(20) + players[human_list[0]]["name"].ljust(
                 27) + str(players[human_list[0]]["type"]).ljust(20) + "||" + " " * 67 + "\n"
             human_list.remove(human_list[0])
         else:
-            data += human_list[0].ljust(19) + players[human_list[0]]["name"].ljust(
+            data += human_list[0].ljust(20) + players[human_list[0]]["name"].ljust(
                 27) + str(players[human_list[0]]["type"]).ljust(20) + "||" + " " + bot_list[0].ljust(19) + \
                     players[bot_list[0]]["name"].ljust(27) + str(players[bot_list[0]]["type"]).ljust(20) + "\n"
             bot_list.remove(bot_list[0])
@@ -50,6 +58,7 @@ def showPlayersToChoose(game,players):
     data += "*" * 136
     print(data)
 
+# Opción que te permite elegir los participantes o quitarlos
 def pickParticipants(game,players):
     opt = input("\n->Option (id to add to game, -id to remove from game, -1 to exit): ")
 
@@ -97,6 +106,7 @@ def pickParticipants(game,players):
                 input("Enter to continue\n")
             return True
 
+# Permite determinar la baraja con la que se va a jugar
 def setDeck(possible_decks):
     while True:
         text_options = ""
@@ -119,6 +129,7 @@ def setDeck(possible_decks):
             else:
                 return deck
 
+# Permite establecer el número máximo de rondas
 def setMaxRounds():
     while True:
         print("*"*136 + "\n" + titles.title_set_max_rounds_centred + "\n" + "*"*136)

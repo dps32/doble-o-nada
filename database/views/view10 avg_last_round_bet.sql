@@ -15,4 +15,6 @@ CREATE VIEW average_last_round_bet AS
                 rounds r2 -- tabla de rounds
             WHERE
                 r2.game_id = r.game_id) -- que partida ha sido
+                AND
+                pr.player_bet > 0 -- Ignora las apuestas = 0 (las de la banca)
     GROUP BY r.game_id; -- agrupar por ID

@@ -10,4 +10,6 @@ CREATE VIEW average_first_round_bet AS
         player_rounds pr ON r.round_id = pr.round_id -- Relacionar los players round con round
     WHERE
         r.round_number = 1 -- buscar en la primera ronda
+        AND
+        pr.player_bet > 0 -- Ignora las apuestas = 0 (las de la banca)
     GROUP BY r.game_id; -- agrupar por partida

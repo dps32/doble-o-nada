@@ -8,6 +8,8 @@ FROM
     player_rounds pr -- Tabla de rondas por jugador
 JOIN
     rounds r ON pr.round_id = r.round_id -- Relacionar las rondas con las partidas
+WHERE
+	pr.player_bet > 0 -- Ignora las apuestas que son igual a 0 (las de la banca)
 GROUP BY
     r.game_id; -- Agrupar por partida
 

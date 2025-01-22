@@ -1,3 +1,9 @@
+"""
+Este es el archivo principal del programa que te permite jugar al Siete y Medio.
+
+Grupo: Doble o Nada
+"""
+
 import functions.database as database
 import functions.option_one_functions as option_one_functions
 import functions.option_two_functions as option_two_functions
@@ -7,18 +13,16 @@ import functions.option_five_functions as option_five_functions
 import functions.titles as titles
 import functions.table_headers as table_headers
 
-players = database.getPlayers()
+players = database.getPlayers() # Obtenemos el diccionario players (sacando los datos de la bbdd)
 
-
-#MODIFICAR
+# Preparamos las listas que necesitaremos y los valores default
 game = []
 original_game = []
 possible_decks = ["SPANISH (48 cards)","SPANISH (40 cards)","POKER"]
 deck_name = "SPANISH (40 cards)"
-context_game = {"game":[],"round":0}
 max_rounds = 5
 
-
+# Menús
 menu00 = "*"*136 + titles.title_main_centred + "*"*136 + "\n" + "1) Add/Remove/Show Players\n2) Settings\n3) Play Game\n4) Ranking\n5) Reports\n6) Exit\n"
 menu01 = "*"*136 + titles.title_bbdd_players_centred + "*"*136 + "\n" + "1) New Human Player\n2) New Bot\n3) Show/Remove Players\n4) Go back\n"
 menu02 = "*"*136 + titles.title_settings_centred + "*"*136 + "\n" + "1) Set Game Players\n2) Set Card's Deck\n3) Set Max Rounds (Default 5 Rounds)\n4) Go back\n"
@@ -28,6 +32,7 @@ menu05 = "*"*136 + titles.title_reports_centred + "*"*136 + "\n" + "1) Initial c
     + "3) Player who makes the lowest bet per game.\n4) Number of users that have been the bank in each game.\n5) Average bet per game.\n6) Average bet of the first round of each game.\n"\
     + "7) Average bet of the last round of each game.\n8) Go back"
 
+# Flags
 exit = False
 flg_00 = True
 flg_01 = False
@@ -38,6 +43,7 @@ flg_03 = False
 flg_04 = False
 flg_05 = False
 
+# Esqueleto del programa (para detalles en las funciones utilizadas consultar los archivos correspondientes en la carpeta functions)
 while not exit:
     while flg_00:
         print(menu00)

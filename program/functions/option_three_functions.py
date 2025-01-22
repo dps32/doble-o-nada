@@ -1,3 +1,9 @@
+"""
+En este archivo se presentan las funciones utilizadas para la opción 3 (el juego en sí) del menú principal del programa.
+
+Grupo: Doble o Nada
+"""
+
 from datetime import datetime
 import random
 import functions.titles as titles
@@ -5,13 +11,16 @@ import functions.database as database
 
 
 def playGame(game_variables):
+    # Se crea una nueva partida indicando la baraja que se utiliza (española (ya sea de 40 o 48) o de poker)
     if game_variables["deck_id"] == 0 or game_variables["deck_id"] == 1:
         gameID = database.newGame(deck = 1)
     else:
         gameID = database.newGame(deck = 2)
+
     game_variables["game_id"] = gameID
     game_variables["start_time"] = datetime.now().replace(microsecond=0)
 
+    # Añadimos los jugadores a la partida creada
     for player in game_variables["game"]:
         playerID = game_variables["players"][player]["player_id"]
         database.insertPlayerIntoGame(playerID, game_variables["game_id"])
@@ -20,8 +29,9 @@ def playGame(game_variables):
 
     exit = False
 
-    resetPointsInitialCard(game_variables["players"],game_variables["game"]) #Le damos a todos los jugadores 20 puntos para empezar, y sitio para guardar la carta inicial
+    resetPointsInitialCard(game_variables["players"],game_variables["game"])
 
+    # Se jugará mientras haya más de un jugador en la lista de participantes, no se llegue al número máximo de rondas y no se decida salir
     while len(game_variables["game"]) > 1 and game_variables["round"] <= game_variables["max_rounds"] and not exit:
         if game_variables["players"][game_variables["game"][0]]["initialCard"] == "":
             setGamePriority(game_variables)
@@ -32,36 +42,46 @@ def playGame(game_variables):
     winner(game_variables)
     database.updateGameEndTime(game_variables["game_id"], datetime.now().replace(microsecond=0))
 
+    # Se actualizarán los puntos de los jugadores que tengan más de 20 puntos al final de la partida (se sumarán los puntos finales menos los 20 iniciales)
+    # También se actualizará el tiempo de juego de todos los jugadores que sigan jugando (para los que han sido eliminados ya ha sido actualizado)
+    for player in game_variables["game"]:
+        database.updatePlayerGameTime(game_variables["players"][player]["player_id"], ((datetime.now().replace(microsecond=0) - game_variables["start_time"]).total_seconds() // 60))
+        if game_variables["players"][player]["points"] > 20:
+            database.updatePlayerPoints(game_variables["players"][player]["player_id"], game_variables["players"][player]["points"]-20)
+
     input("Enter to continue\n")
 
+# Le damos a todos los jugadores 20 puntos para empezar, y sitio para guardar la carta inicial
 def resetPointsInitialCard(players,game):
     for player in game:
         players[player]["points"] = 20
         players[player]["initialCard"] = ""
     print("\nEvery player has now 20 points to start playing!\n")
 
-
+# Se establecen las prioridades de los jugadores repartiendo la carta inicial
 def setGamePriority(game_variables):
+    # Se crea la ronda 0
     roundID = database.newRound(game_variables["game_id"], game_variables["round"])
     game_variables["round_id"] = roundID
 
+    # Se crea un diccionario que almacenará la información de los jugadores de cada ronda
     game_variables["round_players"] = {}
     for player in game_variables["game"]:
         game_variables["round_players"][player] = {}
 
-    game_variables["used_cards"] = []
+    game_variables["used_cards"] = [] # En esta lista se guardarán las cartas usadas para que no se repitan en una misma ronda o al repartir la carta inicial
 
-    #Damos la carta inicial a todos los jugadores
+    # Damos la carta inicial a todos los jugadores
     for player in game_variables["game"]:
-        index_deck = random.randint(0,len(game_variables["deck"])-1) #Se elige aleatoriamente un indice de la lista
-        game_variables["players"][player]["initialCard"] = game_variables["deck"][index_deck] #Se añade como carta inicial del jugador la carta que este en el índice elegido de la lista
+        index_deck = random.randint(0,len(game_variables["deck"])-1) # Se elige aleatoriamente un indice de la lista
+        game_variables["players"][player]["initialCard"] = game_variables["deck"][index_deck] # Se añade como carta inicial del jugador la carta que este en el índice elegido de la lista
 
-        game_variables["used_cards"].append(game_variables["deck"][index_deck]) #Metemos la carta que haya salido en used_cards
-        game_variables["deck"].remove(game_variables["deck"][index_deck]) #Lo eliminamos de la lista de deck, para que dos jugadores no puedan tener la misma carta inicial
+        game_variables["used_cards"].append(game_variables["deck"][index_deck]) # Metemos la carta que haya salido en used_cards
+        game_variables["deck"].remove(game_variables["deck"][index_deck]) # Lo eliminamos de la lista de deck, para que dos jugadores no puedan tener la misma carta inicial
 
-    game_variables["deck"] += game_variables["used_cards"] #Volvemos a meter en la baraja todas las cartas usadas
+    game_variables["deck"] += game_variables["used_cards"] # Volvemos a meter en la baraja todas las cartas usadas
 
-    #Ordenamos la lista de jugadores según su prioridad (el primer elemento de la lista ordenada será el de mayor prioridad)
+    # Ordenamos la lista de jugadores según su prioridad (el primer elemento de la lista ordenada será el de mayor prioridad)
     for sweep in range(len(game_variables["game"]) - 1):
         cambio = False
         for i in range(len(game_variables["game"]) - (sweep + 1)):
@@ -79,8 +99,8 @@ def setGamePriority(game_variables):
         if not cambio:
             break
 
-    summary = "*" * 60 + "\n" + "Name".center(20) + "Initial Card".center(25) + "Priority".center(
-        20) + "\n" + "*" * 60 + "\n"
+    # Se imprime una tabla con la información de la carta inicial y la prioridad de cada jugador
+    summary = "*" * 60 + "\n" + "Name".center(20) + "Initial Card".center(25) + "Priority".center(20) + "\n" + "*" * 60 + "\n"
     for i in range(len(game_variables["game"])):
         if i == len(game_variables["game"])-1:
             game_variables["players"][game_variables["game"][i]]["bank"] = True  # Al jugador de mayor prioridad, se le establece como banca
@@ -93,16 +113,19 @@ def setGamePriority(game_variables):
     print(summary)
     print("{}, the player with the most priority, is now the Bank!\n".format(game_variables["players"][game_variables["game"][-1]]["name"]))
 
+    # Se introduce la información de los jugadores que han jugado la ronda 0
     for player in game_variables["round_players"]:
         database.insertPlayerRound(game_variables["round_id"],game_variables["players"][player]["bank"],game_variables["players"][player]["player_id"],20,20,0,game_variables["cards"][game_variables["players"][player]["initialCard"]]["card_id"])
 
     input("Enter to continue\n")
 
-
+# Función que ejecuta una ronda del juego
 def playRound(game_variables):
+    # Se crea la ronda en la BBDD
     roundID = database.newRound(game_variables["game_id"], game_variables["round"])
     game_variables["round_id"] = roundID
 
+    # Se crea el diccionario donde se guardará la información de los jugadores que juegan la ronda (información que no cambiará pase lo que pase en la ronda)
     game_variables["round_players"] = {}
     for player in game_variables["game"]:
         game_variables["round_players"][player] = {}
@@ -114,10 +137,10 @@ def playRound(game_variables):
     for player in game_variables["game"]:
         game_variables["players"][player]["bet"] = 0 # Ponemos a 0 las apuestas de todos los jugadores, así evitamos que la banca de error al no tener bet
 
-    setBet(game_variables,game_variables["players"],game_variables["game"])
-    game_variables["used_cards"] = []
+    setBet(game_variables,game_variables["players"],game_variables["game"]) # Se establecen las apuestas
+    game_variables["used_cards"] = [] # Se reinicia la lista de used_cards
 
-    resettingPlayerRoundValues(game_variables["players"], game_variables["game"])
+    resettingPlayerRoundValues(game_variables["players"], game_variables["game"]) # Se vacían las listas de cartas de los jugadores y se ponen los roundPoints a 0
 
     print("\nThe first card of each player is about to be given!\n")
     summary = "*" * 60 + "\n" + "Name".center(20) + "Card".center(25) + "Round Points".center(20) + "\n" + "*" * 60 + "\n"
@@ -130,6 +153,7 @@ def playRound(game_variables):
     for player in game_variables["game"]:
         game_variables["round_players"][player] = {"player_id":game_variables["players"][player]["player_id"],"is_bank":game_variables["players"][player]["bank"],"start_points":game_variables["players"][player]["points"],"end_points":0,"player_bet":game_variables["players"][player]["bet"],"first_card":game_variables["players"][player]["cards"][0]} # Ponemos end_points=0 por si algun jugador es eliminado en la ronda y si no lo es, al recorrer la lista de participantes al final de la ronda se corregirán los puntos finales de la ronda
 
+    # Dependiendo de si el jugador es humano, bot y/o banca se ejecutarán las funciones que definen sus respectivas rondas (ya sea dándoles opciones o imprimiendo mensajes que expliquen las decisiones de los jugadores automatizados)
     for i in range(len(game_variables["game"])):
         if game_variables["players"][game_variables["game"][i]]["bank"]:
             print("*" * 136 + "\n" + titles.title_seven_and_half_centred + "\n" + "*" * 136)
@@ -150,21 +174,26 @@ def playRound(game_variables):
                 print("{}'s turn (round {})".format(game_variables["players"][game_variables["game"][i]]["name"],game_variables["round"]).center(136,"*") + "\n")
                 botRound(game_variables,game_variables["game"][i])
                 input("Enter to continue\n")
-
+    # Después de las rondas se hace una primera eliminación de todos aquellos jugadores que ya no tienen puntos
     eliminatingPlayersWith0Points(game_variables)
+    # Si queda todavía más de un jugador se reparten los puntos correspondientes, se cambia de banca si es necesario y se vuelven a eliminar jugadores sin puntos
     if len(game_variables["game"]) > 1:
         givePoints_bankCandidates(game_variables)
         input("Enter to continue\n")
         eliminatingPlayersWith0Points(game_variables)
+
+    # Se imprime un resumen de las stats de los jugadores
     showSummaryStats(game_variables["players"],game_variables["game"])
 
+    # Se introducen los jugadores que han jugado la ronda en la BBDD
     for player in game_variables["round_players"]:
         database.insertPlayerRound(game_variables["round_id"],game_variables["round_players"][player]["is_bank"],game_variables["players"][player]["player_id"],game_variables["round_players"][player]["start_points"],game_variables["round_players"][player]["end_points"],game_variables["round_players"][player]["player_bet"],game_variables["cards"][game_variables["round_players"][player]["first_card"]]["card_id"])
     game_variables["deck"] += game_variables["used_cards"] # Resetting the deck
 
     game_variables["round"] += 1
 
-
+# Se establecen las apuestas de los jugadores que no son banca; los humanos pueden elegirla o decidir que se determine automáticamente según su perfil de riesgo como en el caso de los bots
+# Se guardará una nueva variable en el diccionario de game_variables que acumulará los puntos que la banca debe pagar si todos los jugadores que pueden ganar, ganan
 def setBet(game_variables,players,game):
    game_variables["losingPot"] = 0
    for player in game:
@@ -210,11 +239,12 @@ def setBet(game_variables,players,game):
    input("Enter to continue\n")
    return
 
+# Ronda de la banca
 def bankRound(game_variables,player):
     while mustBankHit(game_variables,player):
         hitCard(game_variables,player)
 
-
+# Ronda humana; presenta opciones para ver stats, pedir cartas, plantarse o que se juegue la ronda automáticamente
 def humanRound(game_variables,player):
     while game_variables["players"][player]["roundPoints"] < 7.5:
         menuHumanRound = "\n1) View Stats\n2) View Game Stats\n3) Hit\n4) Stand\n5) Automatic Play\n"
@@ -255,21 +285,17 @@ def humanRound(game_variables,player):
                 return
     return
 
-
+# Ronda de bot
 def botRound(game_variables,player):
     while game_variables["players"][player]["roundPoints"] < 7.5:
         if shouldTakeRisk(game_variables,player):
             print("\n{} wants another card.\n".format(game_variables["players"][player]["name"]))
             hitCard(game_variables,player)
         else:
-            print("\n{} stands with {} points!\n".format(game_variables["players"][player]["name"],game_variables["players"][player]["roundPoints"]))
             break
     return
 
-# Evaluación de riesgo para todos los jugadores, devuelve True si el jugador debe pedir carta
-# currentPoints: puntos actuales del jugador
-# remainingCards: cartas que quedan por salir
-# riskProfile: perfil de riesgo del jugador
+# Evaluación de riesgo para todos los jugadores automatizados, devuelve True si el jugador debe pedir carta
 def shouldTakeRisk(game_variables,player):
     count = 0
     for card in game_variables["deck"]:
@@ -281,6 +307,7 @@ def shouldTakeRisk(game_variables,player):
     print("{} won't take the risk and stands with {} points!".format(game_variables["players"][player]["name"],game_variables["players"][player]["roundPoints"]))
     return False
 
+# Devuelve el porcentaje de riesgo para imprimirlo cuando un humano pide carta
 def calculateRisk(game_variables,player):
     count = 0
     for card in game_variables["deck"]:
@@ -289,6 +316,7 @@ def calculateRisk(game_variables,player):
     risk = count / len(game_variables["deck"]) * 100  # Calculamos las probabilidades de que salga una carta que nos haga pasarnos
     return risk
 
+# Se muestran las stats del jugador humano que ha elegido que se muestren
 def viewStats(players,player):
     card_str = ""
     for i in range(len(players[player]["cards"])):
@@ -313,6 +341,7 @@ def viewStats(players,player):
     print("\n" + stats + "\n")
     input("Enter to continue\n")
 
+# Se muestran las stats de todos los jugadores
 def viewGameStats(players,game):
     char_player = 136//(len(game)+1)
 
@@ -361,6 +390,7 @@ def viewGameStats(players,game):
     print("\n" + stats + "\n")
     input("Enter to continue\n")
 
+# Se muestran unas stats más resumidas (para cuando acaba una ronda)
 def showSummaryStats(players,game):
     char_player = 136 // (len(game) + 1)
 
@@ -389,7 +419,7 @@ def showSummaryStats(players,game):
     print("\n" + stats + "\n")
     input("Enter to continue\n")
 
-
+# Función que permite añadir una nueva carta aleatoria a la lista de cartas de un jugador cuando éste pide carta
 def hitCard(game_variables, player):
     index_deck = random.randint(0, len(game_variables["deck"]) - 1)  # Se elige aleatoriamente un indice de la lista
 
@@ -402,17 +432,12 @@ def hitCard(game_variables, player):
     game_variables["used_cards"].append(game_variables["deck"][index_deck])  # Metemos la carta que haya salido en used_cards
     game_variables["deck"].remove(game_variables["deck"][index_deck])  # Lo eliminamos de la lista de deck, para que dos jugadores no puedan sacar en una misma ronda la misma carta
 
-    tooManyPoints(game_variables, player)
+    tooManyPoints(game_variables, player) # Si con esta nueva carta se superan los 7,5 puntos se le quitarán los puntos apostados y se sumarán a la banca
     return
 
-# La banca debe pedir carta o plantarse
-# bankPoints: puntos de la banca
-# cardsValue: valor de las cartas de la banca
-# losingPot: el bote que perdería la banca actualmente si se planta
-# winningPlayers: cantidad de jugadores que ganan a la banca
-# losingPlayers: cantidad de jugadores que pierden a la banca
+# Devuelve True si la banca debe pedir carta o False si debe plantarse
 def mustBankHit(game_variables,player):
-    winningPlayers = 0
+    winningPlayers = 0 # Variable que acumulará los jugadores que en la situación actual ganarían a la banca
     for id in game_variables["game"]:
         if game_variables["players"][id]["roundPoints"] > game_variables["players"][player]["roundPoints"]:
             winningPlayers += 1
@@ -431,6 +456,7 @@ def mustBankHit(game_variables,player):
     #La banca no tiene 7,5 ni más, hay jugadores que ganan a la banca y tiene puntos como para pagar las apuestas sin perder
     return shouldTakeRisk(game_variables,player)
 
+# Se reparten los puntos (para los jugadores que no se hayan pasado de 7,5, a excepción de la banca) y el rol de banca si es necesario
 def givePoints_bankCandidates(game_variables):
     bankCandidates = []
 
@@ -449,25 +475,25 @@ def givePoints_bankCandidates(game_variables):
             if game_variables["players"][player]["bet"] != 0:
                 game_variables["players"][player]["points"] -= game_variables["players"][player]["bet"] # Le restamos los puntos apostados a todos los jugadores a los que no se les haya restado ya
         print("The Bank, {}, has defeated everyone in this round and now has {} points.".format(game_variables["players"][game_variables["game"][-1]]["name"],game_variables["players"][game_variables["game"][-1]]["points"]))
-    elif game_variables["players"][game_variables["game"][-1]]["roundPoints"] > 7.5:
-        if game_variables["players"][game_variables["game"][-1]]["points"] >= game_variables["losingPot"]:
+    elif game_variables["players"][game_variables["game"][-1]]["roundPoints"] > 7.5: # Si la banca se ha pasado de 7,5 perderá contra todos los jugadores que no se hayan pasado
+        if game_variables["players"][game_variables["game"][-1]]["points"] >= game_variables["losingPot"]: # Si tiene puntos para pagar las apuestas de todos los jugadores así se hará
             game_variables["players"][game_variables["game"][-1]]["points"] -= game_variables["losingPot"]
             print("The Bank, {}, has lost {} points and now has {} points.".format(game_variables["players"][game_variables["game"][-1]]["name"],game_variables["losingPot"],game_variables["players"][game_variables["game"][-1]]["points"]))
             for i in range(len(game_variables["game"])-2,-1,-1):
                 if game_variables["players"][game_variables["game"][i]]["roundPoints"] <= 7.5:
                     game_variables["players"][game_variables["game"][i]]["points"] += game_variables["players"][game_variables["game"][i]]["bet"]
                     print("{} has won {} points, and now has {} points!".format(game_variables["players"][game_variables["game"][i]]["name"],game_variables["players"][game_variables["game"][i]]["bet"],game_variables["players"][game_variables["game"][i]]["points"]))
-        else:
+        else: # Si no tiene suficientes puntos, se darán puntos empezando por los jugadores de mayor prioridad (empezando por el final de la lista game sin contar la banca)
             while game_variables["players"][game_variables["game"][-1]]["points"] > 0:
                 for i in range(len(game_variables["game"]) - 2, -1, -1):
                     if game_variables["players"][game_variables["game"][i]]["roundPoints"] <= 7.5:
-                        if game_variables["players"][game_variables["game"][i]]["bet"] < game_variables["players"][game_variables["game"][-1]]["points"]:
+                        if game_variables["players"][game_variables["game"][i]]["bet"] < game_variables["players"][game_variables["game"][-1]]["points"]: # Si tiene suficientes puntos para pagar la apuesta del jugador -i de la lista, se pagará al completo
                             game_variables["players"][game_variables["game"][-1]]["points"] -= game_variables["players"][game_variables["game"][i]]["bet"]
                             game_variables["players"][game_variables["game"][i]]["points"] += game_variables["players"][game_variables["game"][i]]["bet"]
                             print("{} has won {} points, and now has {} points!\nSo the Bank has lost {} points and now has {} points.".format(game_variables["players"][game_variables["game"][i]]["name"],
                                                                                     game_variables["players"][game_variables["game"][i]]["bet"],
                                                                                     game_variables["players"][game_variables["game"][i]]["points"],game_variables["players"][game_variables["game"][i]]["bet"],game_variables["players"][game_variables["game"][-1]]["points"]))
-                        elif game_variables["players"][game_variables["game"][i]]["bet"] == game_variables["players"][game_variables["game"][-1]]["points"]:
+                        elif game_variables["players"][game_variables["game"][i]]["bet"] == game_variables["players"][game_variables["game"][-1]]["points"]: # Si tiene solo los puntos para pagar esa apuesta, se darán y se indicará que el banco no puede pagar más apuestas
                             game_variables["players"][game_variables["game"][-1]]["points"] -= game_variables["players"][game_variables["game"][i]]["bet"]
                             game_variables["players"][game_variables["game"][i]]["points"] += game_variables["players"][game_variables["game"][i]]["bet"]
                             print("{} has won {} points, and now has {} points!\nThe Bank has ran out of points, if any other character had to receive points, they won't.".format(
@@ -475,7 +501,7 @@ def givePoints_bankCandidates(game_variables):
                                 game_variables["players"][game_variables["game"][i]]["bet"],
                                 game_variables["players"][game_variables["game"][i]]["points"]))
                             break
-                        else:
+                        else: # Si tiene menos puntos de los necesarios, se darán los que le queden y se informará de que el banco no puede pagar más apuestas
                             game_variables["players"][game_variables["game"][i]]["points"] += game_variables["players"][game_variables["game"][-1]]["points"]
 
                             print("The bank didn't have enough points.\n{} has won {} points, and now has {} points!\nIf any other player had to receive points, they won't.".format(
@@ -484,13 +510,12 @@ def givePoints_bankCandidates(game_variables):
                                     game_variables["players"][game_variables["game"][i]]["points"]))
 
                             game_variables["players"][game_variables["game"][-1]]["points"] = 0
-
                             break
-    else:
+    else: # Si la banca tiene menos de 7,5 se evaluará jugador por jugador si ha ganado contra ése o no, pagando o recibiendo los puntos correspondientes
         for i in range(len(game_variables["game"]) - 2, -1, -1):
-            if game_variables["players"][game_variables["game"][i]]["bet"] != 0:
-                if game_variables["players"][game_variables["game"][-1]]["roundPoints"] < game_variables["players"][game_variables["game"][i]]["roundPoints"]:
-                    if game_variables["players"][game_variables["game"][-1]]["points"] > game_variables["players"][game_variables["game"][i]]["bet"]:
+            if game_variables["players"][game_variables["game"][i]]["bet"] != 0: # Solo se evaluarán aquellos jugadores que tengan una apuesta diferente de 0 (aquellos que se pasaron de 7,5 y ya pagaron su deuda)
+                if game_variables["players"][game_variables["game"][-1]]["roundPoints"] < game_variables["players"][game_variables["game"][i]]["roundPoints"]: # En el caso de que la banca tenga menos puntos que el otro jugador (gana el jugador)
+                    if game_variables["players"][game_variables["game"][-1]]["points"] > game_variables["players"][game_variables["game"][i]]["bet"]: # Si la banca tiene más puntos de los que debe pagar
                         game_variables["players"][game_variables["game"][i]]["points"] += game_variables["players"][game_variables["game"][i]]["bet"]
                         game_variables["players"][game_variables["game"][-1]]["points"] -= game_variables["players"][game_variables["game"][i]]["bet"]
                         print("{} has won {} points, and now has {} points!\nSo the Bank has lost {} points and now has {} points.".format(
@@ -499,7 +524,7 @@ def givePoints_bankCandidates(game_variables):
                                 game_variables["players"][game_variables["game"][i]]["points"],
                                 game_variables["players"][game_variables["game"][i]]["bet"],
                                 game_variables["players"][game_variables["game"][-1]]["points"]))
-                    elif game_variables["players"][game_variables["game"][-1]]["points"] == game_variables["players"][game_variables["game"][i]]["bet"]:
+                    elif game_variables["players"][game_variables["game"][-1]]["points"] == game_variables["players"][game_variables["game"][i]]["bet"]: # Si la banca tiene los mismos puntos que tiene que pagar
                         game_variables["players"][game_variables["game"][i]]["points"] += game_variables["players"][game_variables["game"][i]]["bet"]
                         game_variables["players"][game_variables["game"][-1]]["points"] = 0
                         print("{} has won {} points, and now has {} points!\nThe Bank has ran out of points, if any other character had to receive points, they won't.".format(
@@ -507,7 +532,7 @@ def givePoints_bankCandidates(game_variables):
                                 game_variables["players"][game_variables["game"][i]]["bet"],
                                 game_variables["players"][game_variables["game"][i]]["points"]))
                         break
-                    else:
+                    else: # Si la banca tiene menos puntos de los que tiene que pagar
                         game_variables["players"][game_variables["game"][i]]["points"] += game_variables["players"][game_variables["game"][-1]]["points"]
 
                         print("The Bank didn't have enough points.\n{} has won {} points, and now has {} points!\nThe rest of the players won't receive any points.".format(
@@ -517,12 +542,12 @@ def givePoints_bankCandidates(game_variables):
 
                         game_variables["players"][game_variables["game"][-1]]["points"] = 0
                         break
-                elif game_variables["players"][game_variables["game"][-1]]["roundPoints"] > game_variables["players"][game_variables["game"][i]]["roundPoints"]:
+                elif game_variables["players"][game_variables["game"][-1]]["roundPoints"] > game_variables["players"][game_variables["game"][i]]["roundPoints"]: # En el caso de que la banca tenga más puntos que el otro jugador (gana la banca)
                     game_variables["players"][game_variables["game"][-1]]["points"] += game_variables["players"][game_variables["game"][i]]["bet"]
                     game_variables["players"][game_variables["game"][i]]["points"] -= game_variables["players"][game_variables["game"][i]]["bet"]
 
                     print("The Bank, {}, has won {} points and now has {} points and {} has lost {} points and now has {} points.".format(game_variables["players"][game_variables["game"][-1]]["name"],game_variables["players"][game_variables["game"][i]]["bet"],game_variables["players"][game_variables["game"][-1]]["points"],game_variables["players"][game_variables["game"][i]]["name"],game_variables["players"][game_variables["game"][i]]["bet"],game_variables["players"][game_variables["game"][i]]["points"]))
-                else:
+                else: # En el caso de que la banca y el otro jugador tengan los mismo puntos (gana la banca)
                     game_variables["players"][game_variables["game"][-1]]["points"] += game_variables["players"][game_variables["game"][i]]["bet"]
                     game_variables["players"][game_variables["game"][i]]["points"] -= game_variables["players"][game_variables["game"][i]]["bet"]
 
@@ -577,6 +602,7 @@ def givePoints_bankCandidates(game_variables):
     for player in game_variables["game"]: # Cambiamos los end_points = 0 por los end_points de los jugadores que siguen jugando (y que por lo tanto no tienen 0 puntos)
         game_variables["round_players"][player]["end_points"] = game_variables["players"][player]["points"]
 
+# Al haber pedido y recibido una nueva carta, se mirará si eso hace que el jugador supere los 7,5 roundPoints
 def tooManyPoints(game_variables, player):
     if game_variables["players"][player]["bank"] and game_variables["players"][player]["roundPoints"]>7.5:
         print("The bank, {}, has too many round points and has lost the round!".format(game_variables["players"][player]["name"]))
@@ -591,6 +617,7 @@ def tooManyPoints(game_variables, player):
             game_variables["players"][player]["bet"] = 0
     return
 
+# Función que elimina los jugadores que tengan 0 puntos y que actualizan los minutos jugados de esos jugadores
 def eliminatingPlayersWith0Points(game_variables):
     for player in game_variables["game"]:
         if game_variables["players"][player]["points"] == 0:
@@ -600,12 +627,13 @@ def eliminatingPlayersWith0Points(game_variables):
             game_variables["game"].remove(player)
 
 
-
+# Vacía la lista de cartas de los jugadores para una nueva ronda y restablece los puntos de ronda a 0
 def resettingPlayerRoundValues(players,game):
     for player in game:
         players[player]["cards"] = []
         players[player]["roundPoints"] = 0
 
+# Opción que se ejecuta al acabar cada ronda para ver si se quiere seguir jugando o se quiere abandonar el juego
 def exitGame():
     while True:
         answer = input("Press enter to continue or write exit to exit the game: ")
@@ -619,9 +647,10 @@ def exitGame():
             else:
                 return True
 
+# Imprime el ganador (ya sea porque no quedan más jugadores, se ha alcanzado el máximo de ronda o se ha decidido abandonar la partida)
 def winner(game_variables):
     if len(game_variables["game"]) == 1:
-        print("{} has won with {} points after {} rounds!!! CONGRATULATIONS!".format(game_variables["players"][game_variables["game"][0]]["name"],game_variables["players"][game_variables["game"][0]]["points"],game_variables["round"]))
+        print("{} has won with {} points after {} rounds!!! CONGRATULATIONS!".format(game_variables["players"][game_variables["game"][0]]["name"],game_variables["players"][game_variables["game"][0]]["points"],game_variables["round"]-1))
     else:
         #Si se ha llegado al máximo de rondas o hemos elegido abandonar el juego, se ordenará la lista para dejar en primera posición al jugador con más puntos
         for sweep in range(len(game_variables["game"]) - 1):
@@ -641,6 +670,6 @@ def winner(game_variables):
             if not cambio:
                 break
         if game_variables["round"] == game_variables["max_rounds"]:
-            print("The maximum number of round has been reached!\nThe winner, with {} points, is {}!!! CONGRATULATIONS!".format(game_variables["players"][game_variables["game"][0]]["points"],game_variables["players"][game_variables["game"][0]]["name"]))
+            print("The maximum number of rounds has been reached!\nThe winner, with {} points, is {}!!! CONGRATULATIONS!".format(game_variables["players"][game_variables["game"][0]]["points"],game_variables["players"][game_variables["game"][0]]["name"]))
         else:
             print("You have chosen to exit the game.\nThe winner, with {} points, is {}!!! CONGRATULATIONS!".format(game_variables["players"][game_variables["game"][0]]["points"],game_variables["players"][game_variables["game"][0]]["name"]))

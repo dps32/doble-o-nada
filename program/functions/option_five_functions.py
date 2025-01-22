@@ -1,17 +1,28 @@
+"""
+En este archivo se presentan las funciones utilizadas para la opción 5 del menú principal del programa.
+
+Grupo: Doble o Nada
+"""
+
 import functions.database as database
 import functions.titles as titles
+
+# Todas las funciones funcionan de la misma manera:
+# - Obtienen la vista correspondiente de la BBDD
+# - Se imprime la cabecera de la tabla a imprimir
+# - Se le suman fila a fila los datos de la vista
 
 def report1():
     print("*" * 136 + titles.title_reports_centred + "*" * 136)
     report1 = database.query("SELECT * FROM player_initial_card_statistics")
 
-    data = "*" * 80 + "\n" + "DNI".ljust(10) + "Name".ljust(15) + "Suit".rjust(10) + "Initial Card".rjust(
-        15) + "Times Repeated".rjust(15) + "Total Games".rjust(15) + "\n" + "*" * 80 + "\n"
+    data = "*" * 90 + "\n" + "DNI".ljust(10) + "Name".ljust(15) + "Suit".rjust(10) + "Initial Card".rjust(
+        25) + "Times Repeated".rjust(15) + "Total Games".rjust(15) + "\n" + "*" * 90 + "\n"
 
     for entry in report1:
         nif = database.query("SELECT dni FROM players WHERE player_id = %s", (entry['player_id'],))
         nif = nif[0]['dni']
-        data += nif.ljust(10) + entry['player_name'].ljust(15) + entry['suit'].rjust(10) + entry['initial_card_name'].rjust(15) + entry['times_repeated'].rjust(15) + entry['total_games'].rjust(15) + "\n"
+        data += nif.ljust(10) + entry['player_name'].ljust(15) + entry['suit'].rjust(10) + entry['most_repeated_card'].rjust(25) + str(entry['times_repeated']).rjust(15) + str(entry['total_games']).rjust(15) + "\n"
 
     print(data)
     input("Enter to continue\n")
@@ -25,7 +36,7 @@ def report2():
     for entry in report2:
         nif = database.query("SELECT dni FROM players WHERE player_id = %s", (entry['player_id'],))
         nif = nif[0]['dni']
-        data += str(entry['game_id']).ljust(10) + nif.ljust(10) + str(entry['highest_bet']).rjust(15) + "\n"
+        data += str(entry['game_id']).ljust(10) + nif.ljust(10) + str(entry['player_bet']).rjust(15) + "\n"
 
     print(data)
     input("Enter to continue\n")
